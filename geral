@@ -1,4 +1,4 @@
-https://raw.githubusercontent.com/SageSBR/4master/main/install; chmod +x install; ./install
+wget https://raw.githubusercontent.com/SageSBR/4master/main/install; chmod +x install; ./install
 
 nano /etc/openvpn/server.conf
 /etc/init.d/openvpn restart
