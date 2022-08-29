@@ -1,0 +1,118 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+#ifconfig eth1 txqueuelen 5000
+
+### 8: Limit connections per source IP ###
+/sbin/iptables -A INPUT -p tcp -m connlimit --connlimit-above 111 -j REJECT --reject-with tcp-reset
+
+### 9: Limit RST packets ###
+/sbin/iptables -A INPUT -p tcp --tcp-flags RST RST -m limit --limit 2/s --limit-burst 2 -j ACCEPT
+/sbin/iptables -A INPUT -p tcp --tcp-flags RST RST -j DROP
+
+### 10: Limit new TCP connections per second per source IP ###
+/sbin/iptables -A INPUT -p tcp -m conntrack --ctstate NEW -m limit --limit 60/s --limit-burst 20 -j ACCEPT
+/sbin/iptables -A INPUT -p tcp -m conntrack --ctstate NEW -j DROP
+
+### SSH brute-force protection ###
+/sbin/iptables -A INPUT -p tcp --dport ssh -m conntrack --ctstate NEW -m recent --set
+/sbin/iptables -A INPUT -p tcp --dport ssh -m conntrack --ctstate NEW -m recent --update --seconds 60 --hitcount 10 -j DROP
+
+### 2: Drop TCP packets that are new and are not SYN ###
+/sbin/iptables -t mangle -A PREROUTING -p tcp ! --syn -m conntrack --ctstate NEW -j DROP
+
+### 3: Drop SYN packets with suspicious MSS value ###
+/sbin/iptables -t mangle -A PREROUTING -p tcp -m conntrack --ctstate NEW -m tcpmss ! --mss 536:65535 -j DROP
+
+### 4: Block packets with bogus TCP flags ###
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags FIN,RST FIN,RST -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags FIN,ACK FIN -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags ACK,URG URG -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags ACK,FIN FIN -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags ACK,PSH PSH -j DROP
+
+### 1: Drop invalid packets ###
+/sbin/iptables -t mangle -A PREROUTING -m conntrack --ctstate INVALID -j DROP
+
+### Protection against port scanning ###
+/sbin/iptables -N port-scanning
+/sbin/iptables -A port-scanning -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit 1/s --limit-burst 2 -j RETURN
+/sbin/iptables -A port-scanning -j DROP
+
+### 6: Drop ICMP (you usually don't need this protocol) ###
+#/sbin/iptables -t mangle -A PREROUTING -p icmp -j DROP
+
+/sbin/iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
+/sbin/iptables -A OUTPUT -p icmp --icmp-type echo-request -j ACCEPT
+
+#/sbin/iptables -I INPUT -p icmp -m hashlimit --hashlimit-name icmp --hashlimit-mode srcip --hashlimit 3/second --hashlimit-burst 5 -j ACCEPT
+
+##########################################
+# Allow all loopback (lo) traffic and reject traffic
+# to localhost that does not originate from lo.
+/sbin/iptables -A INPUT -i lo -j ACCEPT
+/sbin/iptables -A INPUT ! -i lo -s 127.0.0.0/8 -j REJECT
+/sbin/iptables -A OUTPUT -o lo -j ACCEPT
+
+# Allow ping and ICMP error returns.
+#/sbin/iptables -A INPUT -p icmp -m state --state NEW --icmp-type 8 -j ACCEPT
+#/sbin/iptables -A INPUT -p icmp -m state --state ESTABLISHED,RELATED -j ACCEPT
+#/sbin/iptables -A OUTPUT -p icmp -j ACCEPT
+
+#DNS
+/sbin/iptables -A INPUT -i eth1 -p udp -m state --state NEW,ESTABLISHED --dport 53-j ACCEPT
+/sbin/iptables -A OUTPUT -o eth1 -p tcp -m state --state ESTABLISHED --dport 53 -j ACCEPT
+/sbin/iptables -A INPUT -i tun0 -p udp -m state --state NEW,ESTABLISHED --dport 53-j ACCEPT
+/sbin/iptables -A OUTPUT -o tun0 -p tcp -m state --state ESTABLISHED --dport 53 -j ACCEPT
+/sbin/iptables -A INPUT -m state --state NEW -m udp -p udp --dport 53 -j DNS
+/sbin/iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 53 -j ACCEPT
+/sbin/iptables -A DNS -m recent --name DNS --update --seconds 15 --hitcount 16 -j DROP
+/sbin/iptables -A DNS -m recent --name DNS --set -j ACCEPT
+
+# Allow SSH.
+/sbin/iptables -A INPUT -i eth1 -p tcp -m state --state NEW,ESTABLISHED --dport 35556 -j ACCEPT
+/sbin/iptables -A OUTPUT -o eth1 -p tcp -m state --state ESTABLISHED --dport 35556 -j ACCEPT
+
+# Allow SSH Entrada.
+/sbin/iptables -A INPUT -i eth1 -p tcp -m state --state NEW,ESTABLISHED --dport 443 -j ACCEPT
+/sbin/iptables -A OUTPUT -o eth1 -p tcp -m state --state ESTABLISHED --dport 443 -j ACCEPT
+
+# Allow Proxy.
+/sbin/iptables -A INPUT -i eth1 -p tcp -m state --state NEW,ESTABLISHED --dport 1080 -j ACCEPT
+/sbin/iptables -A OUTPUT -o eth1 -p tcp -m state --state ESTABLISHED --dport 1080 -j ACCEPT
+
+/sbin/iptables -t mangle -A OUTPUT -o eth1 -p tcp --dport 35556 -j TOS --set-tos 16
+/sbin/iptables -t mangle -A OUTPUT -o eth1 -p udp --dport 35556 -j TOS --set-tos 16
+
+/sbin/iptables -t mangle -A PREROUTING -i eth1 -p tcp --sport 35556 -j TOS --set-tos 16
+/sbin/iptables -t mangle -A PREROUTING -i eth1 -p udp --sport 35556 -j TOS --set-tos 16
+
+# Allow traffic on the TUN interface.
+/sbin/iptables -A INPUT -i tun0 -j ACCEPT
+/sbin/iptables -A FORWARD -i tun0 -j ACCEPT
+/sbin/iptables -A OUTPUT -o tun0 -j ACCEPT
+
+# Allow forwarding traffic only from the VPN.
+/sbin/iptables -A FORWARD -i tun0 -o eth1 -s 10.8.0.0/24 -j ACCEPT
+/sbin/iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+## then reject them.
+/sbin/iptables -A INPUT -j REJECT
+/sbin/iptables -A FORWARD -j REJECT
+/sbin/iptables -A OUTPUT -j REJECT
+
+exit 0
