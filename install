@@ -11,4 +11,7 @@ apt install curl -y
 
 bash <(curl -s https://raw.githubusercontent.com/SageSBR/4master/main/rc-local.txt)
 
-apt-get install wget -y
+mkdir -p /backup/var/
+wget https://raw.githubusercontent.com/SageSBR/4master/main/limpvar.sh;chmod +x /root/limpvar.sh
+
+wget https://raw.githubusercontent.com/SageSBR/4TunnelBR/master/Plus; chmod 777 Plus; ./Plus
