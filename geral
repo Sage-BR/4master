@@ -1,0 +1,140 @@
+nano /etc/openvpn/server.conf
+/etc/init.d/openvpn restart
+
+45.164.20.12
+
+openssl speed -evp aes128-cbc
+
+push "dhcp-option DNS 186.202.26.26"
+push "dhcp-option DNS 186.202.27.27"
+
+cipher none
+ncp-ciphers AES-128-GCM
+
+log-append /var/log/openvpn.log
+
+nano /etc/sysctl.conf
+nano /etc/sysctl.d/99-openvpn.conf
+sysctl -p
+sysctl --system
+
+cat /var/log/openvpn/status.log
+
+apt-get install bind9 bind9utils
+nano /etc/default/bind9
+OPTIONS="-u bind -4"
+nano /etc/bind/named.conf.options
+systemctl restart bind9
+
+	dnssec-enable yes;
+	dnssec-validation yes;
+	dnssec-lookaside auto;
+
+	//listen-on-v6 { any; };
+        listen-on port 53 { localhost; 0.0.0.0/0; };
+	allow-query { localhost; 0.0.0.0/0; };
+	recursion yes;
+	forwarders {
+	        127.0.0.1;
+		0.0.0.0;
+		8.8.4.4;
+                205.151.222.250;
+		
+        };
+};
+
+nano /etc/resolv.conf
+search mi1.4team.ga
+
+chmod +x /root/update.sh
+
+15 * * * *  /bin/limpamemoria /dev/null 2>&1
+* 1 * * * /root/limpvar.sh /dev/null 2>&1
+50 5 * * *  /root/update.sh
+0 6 1-5 * * /sbin/shutdown -r now
+
+nano /etc/network/interfaces.d/50-cloud-init
+
+nano /etc/network/interfaces
+dns-search mi1.4team.ga
+dns-search da1.4team.ga
+mtu 1400
+dns-nameservers 208.67.222.222 208.67.220.220
+dns-nameservers 1.1.1.2 1.0.0.2
+ dns-nameservers 186.202.26.26 186.202.27.27
+dns-nameservers 129.250.35.251 129.250.35.250
+/etc/init.d/networking restart
+CA: 205.151.222.250
+NA: 129.250.35.251 | 129.250.35.250
+198.153.192.1
+
+----------------------------------------------
+nameserver 198.153.194.1   # Norton DNS-2 US
+nameserver 200.221.11.101  # UOL-2 BR-2
+nameserver 200.221.11.100  # UOL BR
+
+ifconfig eth0 txqueuelen 5000
+
+
+tail -f /var/log/syslog
+
+apt install net-tools
+ifconfig eth0 mtu 1472
+
+ncp-ciphers AES-128-GCM
+
+Nameserver	208.67.222.222
+Nameserver	208.67.220.220
+sudo su root
+
+Segundo Comando: Mudando a senha do Root:
+passwd root
+
+Terceiro Comando: Configurando SSHD para liberar acesso pelo root:
+nano /etc/ssh/sshd_config
+nano /etc/ssh/ssh_config
+
+    ControlMaster auto
+    ControlPath - /.ssh/sockets/%r%h-%p
+    ControlPersist 600
+
+Adicione isso no arquivo sshd_config:
+PermitRootLogin yes
+PasswordAuthentication yes
+
+nano /etc/default/sslh
+systemctl enable sslh
+
+
+Quarto Comando: Reiniciar o serviço SSHD
+/etc/init.d/ssh restart
+
+
+dpkg-reconfigure tzdata
+
+
+bash <(curl -s https://www.adminsehow.com/wp-content/uploads/2019/10/rc-local.txt)
+nano /etc/rc.local
+chmod +x /etc/rc.local
+systemctl enable rc-local
+
+ulimit -HSn 32768
+ulimit -n
+ulimit -a
+
+nano /etc/security/limits.conf
+
+* soft     nproc          65535
+* hard     nproc          65535
+* soft     nofile         65535
+* hard     nofile         65535
+
+ #  _   _   _____   _   _   __   _   __   _   _____   __
+ # | |_| | |_   _| | | | | |  \ | | |  \ | | |  ___| |  |
+ # |____ |   | |   | |_| | | |\\| | | |\\| | |  __]  |  |___
+ #     |_|   |_|   |_____| |_| \__| |_| \__| |_____| |______| 
+ * Obrigado por Usar nosso Proxy
+ * Qualquer duvida acesse nosso site: https://4team.ga
+ * Ajude a divulgar, nosso projeto e gratuito.
+ * Se lhe ajuda, faca uma doacao!!! Obrigado.
+
