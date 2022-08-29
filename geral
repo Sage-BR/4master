@@ -113,7 +113,7 @@ Quarto Comando: Reiniciar o serviço SSHD
 dpkg-reconfigure tzdata
 
 
-bash <(curl -s https://github.com/SageSBR/4master/blob/main/rc-local.txt)
+bash <(curl -s https://raw.githubusercontent.com/SageSBR/4master/main/rc-local.txt)
 nano /etc/rc.local
 chmod +x /etc/rc.local
 systemctl enable rc-local
