@@ -50,10 +50,10 @@ search mi1.4team.ga
 
 chmod +x /root/update.sh
 
-15 * * * *  /bin/limpamemoria /dev/null 2>&1
-* 1 * * * /root/limpvar.sh /dev/null 2>&1
-50 5 * * *  /root/update.sh
-0 6 1-5 * * /sbin/shutdown -r now
+*/15 * * * *  /bin/limpamemoria /dev/null 2>&1
+0 */1 * * * /root/limpvar.sh /dev/null 2>&1
+50 */5 * * *  /root/update.sh
+0 */6 * * 1-5 /sbin/shutdown -r now
 
 nano /etc/network/interfaces.d/50-cloud-init
 
