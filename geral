@@ -140,3 +140,5 @@ nano /etc/security/limits.conf
  * Ajude a divulgar, nosso projeto e gratuito.
  * Se lhe ajuda, faca uma doacao!!! Obrigado.
 
+pfifo_fast
+fq_codel
