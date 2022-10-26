@@ -11,6 +11,7 @@
 # default value.
 
 Port 35556
+Port 443
 #AddressFamily any
 #ListenAddress 0.0.0.0
 #ListenAddress ::
@@ -28,7 +29,7 @@ Port 35556
 
 # Authentication:
 
-#LoginGraceTime 30
+LoginGraceTime 30
 PermitRootLogin yes
 #StrictModes yes
 MaxAuthTries 3
@@ -84,8 +85,8 @@ UsePAM yes
 
 #AllowAgentForwarding yes
 AllowTcpForwarding yes
-#GatewayPorts no
-#X11Forwarding yes
+#GatewayPorts yes
+X11Forwarding no
 #X11DisplayOffset 10
 #X11UseLocalhost yes
 #PermitTTY yes
@@ -93,9 +94,9 @@ PrintMotd no
 #PrintLastLog yes
 TCPKeepAlive yes
 #PermitUserEnvironment no
-Compression yes
-ClientAliveInterval 0
-ClientAliveCountMax 3
+#Compression yes
+ClientAliveInterval 60
+ClientAliveCountMax 1
 UseDNS no
 #PidFile /var/run/sshd.pid
 MaxStartups 3:50:100
