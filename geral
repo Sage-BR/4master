@@ -1,6 +1,6 @@
 wget https://raw.githubusercontent.com/SageSBR/4master/main/install; chmod +x install; ./install
 
-DB query: delete from accounts where created_time < now() - interval 14 DAY;
+delete from accounts where created_time < now() - interval 14 DAY AND accessLevel = 0;
 
 nano /etc/openvpn/server.conf
 /etc/init.d/openvpn restart
