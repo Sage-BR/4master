@@ -101,6 +101,8 @@ nano /etc/ssh/ssh_config
     ControlMaster auto
     ControlPath - /.ssh/sockets/%r%h-%p
     ControlPersist 600
+    ServerAliveInterval 160
+    ServerAliveCountMax 2
 
 Adicione isso no arquivo sshd_config:
 PermitRootLogin yes
