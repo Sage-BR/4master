@@ -103,7 +103,9 @@ nano /etc/ssh/ssh_config
     ControlPersist 600
     ServerAliveInterval 160
     ServerAliveCountMax 2
-
+    TCPReceiveWindow 64
+    TCPSendWindow 64
+    
 Adicione isso no arquivo sshd_config:
 PermitRootLogin yes
 PasswordAuthentication yes
