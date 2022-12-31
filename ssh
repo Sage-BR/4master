@@ -96,11 +96,11 @@ TCPKeepAlive yes
 #PermitUserEnvironment no
 #Compression yes
 ClientAliveInterval 60
-ClientAliveCountMax 1
+ClientAliveCountMax 2
 UseDNS no
 #PidFile /var/run/sshd.pid
 MaxStartups 3:50:100
-#PermitTunnel yes
+PermitTunnel yes
 #ChrootDirectory none
 #VersionAddendum none
 
