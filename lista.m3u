@@ -17,21 +17,21 @@ http://0.0.0.0
 ############## Viki #################  
 #EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Viki", T1|EP1
 http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/01-BAIXO.mp4|Referer=http://netcine.us/
-#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" group-title="1Â° TEMPORADA", ARW T1|EP2
+#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Viki", ARW T1|EP2
 http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/02-BAIXO.mp4|Referer=http://netcine.us/
-#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" group-title="1Â° TEMPORADA", ARW T1|EP3
+#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Viki", ARW T1|EP3
 http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/03-BAIXO.mp4|Referer=http://netcine.us/
-#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" group-title="1Â° TEMPORADA", ARW T1|EP4
+#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Viki", ARW T1|EP4
 http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/04-BAIXO.mp4|Referer=http://netcine.us/
 
 ############## Netflix #################  
 #EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Netflix", T1|EP1
 http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/01-BAIXO.mp4|Referer=http://netcine.us/
-#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" group-title="Netflix", ARW T1|EP2
+#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Netflix", ARW T1|EP2
 http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/02-BAIXO.mp4|Referer=http://netcine.us/
-#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" group-title="Netflix", ARW T1|EP3
+#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Netflix", ARW T1|EP3
 http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/03-BAIXO.mp4|Referer=http://netcine.us/
-#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" group-title="Netflix", ARW T1|EP4
+#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Netflix", ARW T1|EP4
 http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/04-BAIXO.mp4|Referer=http://netcine.us/
 
 #EXTINF:-1 tvg-logo="https://goo.gl/2uDJ2f" group-title="6Â° TEMPORADA", ARW T6|EP16 (LEG)
