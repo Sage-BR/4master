@@ -1,6 +1,6 @@
 #EXTM3U
-#EXTINF:-1 tvg-logo="https://goo.gl/qD8cax" group-title="INFORMAÃ‡Ã•ES: CLIQUE AQUI!", Tela SÃ©ries
-https://www.dropbox.com/s/f2gscny85zbf6x0/5.mp4?dl=0
+#EXTINF:-1 tvg-logo="https://goo.gl/qD8cax" type="video" group-title="INFORMAÃ‡Ã•ES: CLIQUE AQUI!", Tela SÃ©ries
+https://www.googleapis.com/drive/v3/files/1gwFh-dW-3FzzzQtXla5oHXwqgm8CsSAV=media&key=100160041530617838033
 #EXTINF:-1 tvg-logo="https://goo.gl/qD8cax" group-title="INFORMAÃ‡Ã•ES: CLIQUE AQUI!", SÃ‰RIES ESTÃƒO NA QUALIDADE EM SD
 https://drive.google.com/u/1/uc?id=1gwFh-dW-3FzzzQtXla5oHXwqgm8CsSAV&export=download
 #EXTINF:-1 tvg-logo="http://www.listaiptvvip.com/wp-content/uploads/2017/12/lista-iptv-vip.png" group-title="MELHOR LISTA DE CANAIS", WHATS (19) 998509928
@@ -14,16 +14,16 @@ https://public.dm.files.1drv.com/y4mDd_Aejvxx4y52eTBVZ8E-Zkc14ot2ANAzDk4K1vugtf5
 
 ############## Viki #################  
 #EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" group-title="Viki", T1|EP1 GAUS ELETRONIC
-https://public.dm.files.1drv.com/y4mk4tpN4S4ve7M_myx1WtiZnuGcVHAWvnJegEkpLMOFmedU4I1xRb_VCtfyOuDdmK35BJq1QYAzKzO_HjKUfKynrGk333ZefNZSwXuDLgIxhbjwAUUmObJOUHdYurUF1eZCkPQFn6_GxX_tr-YwPETqc5V2-cu8OzHn2ZGRoCdQc9fxdZ0eMGfovDBIgqiRMEY2TAL0qiUox7-MyD-on4qjDhFRWkIkuEc24AdtNOWbnA?
+http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/1.mp4
 #EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" group-title="Viki", T1|EP2 GAUS ELETRONIC
-https://public.dm.files.1drv.com/y4mDd_Aejvxx4y52eTBVZ8E-Zkc14ot2ANAzDk4K1vugtf5cp7N32-iWj0dDMGDWmSY-KJlXzpgoJW6AkVgVihpat110jkcIoPY6ziX_zHX-2XmWRXK1_yveLmWUID2TQKBiamBEkH1VZoC91jl1-EnEnUHwJPz2BcKvJF8R9dssbNXfhN7q4Emj9sGa1jpG_mcbXaHjr-V382I96sPRsfj5zQcXKEz9lbPkIE-E6HZy70?
+http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/2.mp4
 #EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" group-title="Viki", T1|EP3 GAUS ELETRONIC
-https://public.dm.files.1drv.com/y4mh78jgP16DmyR7lMII-s6mTsSlXNtyooeR-5zkeDbz7P6UUZmT3yufTYfecwtyeQDie5O8VsAU_fZp39He3dDTPKG7kRpPRb_PMGEZvqYGCf7W6zeF5aOSq5_GLwg73MxFv_HhPBJNFixcDb34yd_AKJSpYNwIoKhOjgzPR33QEuN1gtafeillp2a-dF9Z61y5UldWfAcR9Fq3hp5l8OkO1nhSpeoBMBmSRRivaNFhrM?
+http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/3.mp4
 #EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" group-title="Viki", T1|EP4 GAUS ELETRONIC
-https://public.dm.files.1drv.com/y4mECu0sX6UQKRqVWKxEK7CCgHN8t5lot8exe-aF1yofl0fvcdHFh6ADW2I3Ahi3k3p9XSLH-q59A_tCb173XUFTVvLbqn7DaXLfse-UZZRkxo5x9EabzREU3bvpeGMaYY7yHOPLBpczmJrxlpdx-Koqy1u-uH8Q3G5R7mk3B7FabAg_NsX3f38agrQaZWX-6_j2b1fmcaPJLKdWCyws8PuxM-mKinAN_8_2tuHPd4-oSs?
+http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/4.mp4
 #EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" group-title="Viki", T1|EP5 GAUS ELETRONIC
-https://public.dm.files.1drv.com/y4mnGMiu2sCUbPqnDPbvLR-TP3dPuCWncXdcurzOpXJL27c268kmQOd206knF2CwBjagZGUnhkw9T2YL1-OJFLvTVpEbVR9HZRGga4eMeyTUdc8Af44U3tLMoBKo-_DlOqE4M-xLganWRVg0BV2k-c9j58K20svdQz2ntUgAh6OBh69ERpv2OhPRrkDl86eh00uo4rvBvevhE93c7QQDavYsEC5BCAWs-63VvXqhwpYXU8?
+http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/5.mp4
 #EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" group-title="Viki", T1|EP6 GAUS ELETRONIC
-https://public.dm.files.1drv.com/y4moDta5cVLyxFXRdFqJbJNsE65vWcw0GZJKmYiuj3RVMpkl2z2ui-L82qn0ienb0Z8WMxJ104aW_S74r15o2M7Q0Sc7Wr8LtSLWHsJttu_WwNVQg66n8uT0kHK0vDBU1M4fDjrnWdSrMDDmRHJKyBjfXKu53iO7DWS2y_hTfLn1T7gyMQiQHAXOkxYBgmpeZ7jYU4emlhrDnv_Q2d9m4nnyBAHhK5VRstGlwIm3_1WAUo?
+http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/6.mp4
 #EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" group-title="Viki", T1|EP7 GAUS ELETRONIC
-https://public.dm.files.1drv.com/y4m8TIVQbSCucexC86OFatt8ePZ83jjRbEmNhNV3HfS87JUsY2ZWeBY1zYg_fjp9BniT6BLsgW5S6srarh_GZyne46yS5HiEhO872jAotkwKOu6hAqijqpSPaWdO6W1eGrqKnzNX-RXLeMbCmORE9hGJ_qCNzvTTA4wkHNXZzf37cD6QZ-Yx_wsaJvOqNsQ5VE5Zi9-63t3juADKNE6R1vQhTSW0437kW8k9CJmh6N3UnY?
+http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/7.mp4
