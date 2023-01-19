@@ -1,41 +1,45 @@
 #EXTM3U
-#EXTINF:-1 tvg-logo="https://goo.gl/qD8cax" type="video" group-title="INFORMAÃ‡Ã•ES: CLIQUE AQUI!", Tela SÃ©ries
+#EXTINF:-1 tvg-logo="https://goo.gl/qD8cax" group-title="INFOS: CLIQUE AQUI!", 4TEAM.GA
 https://
-#EXTINF:-1 tvg-logo="https://goo.gl/qD8cax" group-title="INFORMAÃ‡Ã•ES: CLIQUE AQUI!", SÃ‰RIES ESTÃƒO NA QUALIDADE EM SD
+#EXTINF:-1 tvg-logo="https://goo.gl/qD8cax" group-title="INFOS: CLIQUE AQUI!", AJUDE A MANTER TUDO ONLINE
 https://
+#EXTINF:-1 tvg-logo="https://goo.gl/qD8cax" group-title="FONTES: CLIQUE AQUI!", DramaFansub
+https://
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/themes/newAnimespank/img/logop.png" group-title="FONTES: CLIQUE AQUI!", Doramogo
+https://doramogo.com/
 #EXTINF:-1 tvg-logo="http://www.listaiptvvip.com/wp-content/uploads/2017/12/lista-iptv-vip.png" group-title="MELHOR LISTA DE CANAIS", WHATS (19) 998509928
 https://
 
 ############## Viki #################  
-#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/03/1-18.jpg" type="video" group-title="Viki" pltv-subgroup="T1", EP1 DOOM AT YOUR SERVICE
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/03/1-18.jpg" tvg-name="T1|EP1 DOOM AT YOUR SERVICE" type="video" group-title="Viki", T1|EP1 DOOM AT YOUR SERVICE
 http://mi1.4team.ga:8080/viki/DOOM%20AT%20YOUR%20SERVICE/1.avi
-#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/03/1-18.jpg" type="video" group-title="Viki", EP2 DOOM AT YOUR SERVICE
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/03/1-18.jpg" tvg-name="T1|EP2 DOOM AT YOUR SERVICE" type="video" group-title="Viki", T1|EP2 DOOM AT YOUR SERVICE
 http://mi1.4team.ga:8080/viki/DOOM%20AT%20YOUR%20SERVICE/2.avi
-#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/03/1-18.jpg" type="video" group-title="Viki", EP2 DOOM AT YOUR SERVICE
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/03/1-18.jpg" tvg-name="T1|EP3 DOOM AT YOUR SERVICE" type="video" group-title="Viki", T1|EP3 DOOM AT YOUR SERVICE
 http://mi1.4team.ga:8080/viki/DOOM%20AT%20YOUR%20SERVICE/3.avi
 
 ############## Viki #################  
-#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" type="video" group-title="Viki" pltv-subgroup="T1", EP1 GAUS ELETRONIC
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" tvg-name="T1| EP1 GAUS ELETRONIC" type="video" group-title="Viki" ,T1| EP1 GAUS ELETRONIC
 http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/1.mp4
-#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" type="video" group-title="Viki" pltv-subgroup="T1", EP2 GAUS ELETRONIC
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" tvg-name="T1| EP2 GAUS ELETRONIC" type="video" group-title="Viki", T1| EP2 GAUS ELETRONIC
 http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/2.mp4
-#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" type="video" group-title="Viki" pltv-subgroup="T1", EP3 GAUS ELETRONIC
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" tvg-name="T1| EP3 GAUS ELETRONIC" type="video" group-title="Viki", T1| EP3 GAUS ELETRONIC
 http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/3.mp4
-#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" type="video" group-title="Viki" pltv-subgroup="T1", EP4 GAUS ELETRONIC
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" tvg-name="T1| EP4 GAUS ELETRONIC" type="video" group-title="Viki", T1| EP4 GAUS ELETRONIC
 http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/4.mp4
-#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" type="video" group-title="Viki" pltv-subgroup="T1", EP5 GAUS ELETRONIC
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" tvg-name="T1| EP5 GAUS ELETRONIC" type="video" group-title="Viki", T1| EP5 GAUS ELETRONIC
 http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/5.mp4
-#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" type="video" group-title="Viki" pltv-subgroup="T1", EP6 GAUS ELETRONIC
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" tvg-name="T1| EP6 GAUS ELETRONIC" type="video" group-title="Viki", T1| EP6 GAUS ELETRONIC
 http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/6.mp4
-#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" type="video"group-title="Viki" pltv-subgroup="T1", EP7 GAUS ELETRONIC
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" tvg-name="T1| EP7 GAUS ELETRONIC" type="video"group-title="Viki", T1| EP7 GAUS ELETRONIC
 http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/7.mp4
-#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" type="video" group-title="Viki" pltv-subgroup="T1", EP8 GAUS ELETRONIC
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" tvg-name="T1| EP8 GAUS ELETRONIC" type="video" group-title="Viki", T1| EP8 GAUS ELETRONIC
 http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/8.mp4
-#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" type="video" group-title="Viki" pltv-subgroup="T1", EP9 GAUS ELETRONIC
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" tvg-name="T1| EP9 GAUS ELETRONIC" type="video" group-title="Viki", T1| EP9 GAUS ELETRONIC
 http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/9.mp4
-#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" type="video" group-title="Viki" pltv-subgroup="T1", EP10 GAUS ELETRONIC
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" tvg-name="T1| EP10 GAUS ELETRONIC" type="video" group-title="Viki" ,T1| EP10 GAUS ELETRONIC
 http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/10.mp4
-#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" type="video" group-title="Viki" pltv-subgroup="T1", EP11 GAUS ELETRONIC
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" tvg-name="T1| EP11 GAUS ELETRONIC" type="video" group-title="Viki" ,T1| EP11 GAUS ELETRONIC
 http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/11.mp4
-#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" type="video" group-title="Viki" pltv-subgroup="T1", EP12 GAUS ELETRONIC
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" tvg-name="T1| EP12 GAUS ELETRONIC" type="video" group-title="Viki" ,T1| EP12 GAUS ELETRONIC
 http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/12.mp4
