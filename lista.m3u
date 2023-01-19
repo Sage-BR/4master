@@ -8,7 +8,7 @@ http://0.0.0.0
 
 ############## Viki #################  
 #EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Viki", T1|EP1
-https://drive.google.com/file/d/1OkSYWK3L2elU6sKa8MUHCzjWykPS3plh/view|Referer=http://netcine.us/
+https://drive.google.com/uc?id=1OkSYWK3L2elU6sKa8MUHCzjWykPS3plh&export=download|Referer=http://netcine.us/
 #EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Viki", ARW T1|EP2
 http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/02-BAIXO.mp4|Referer=http://netcine.us/
 #EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Viki", ARW T1|EP3
