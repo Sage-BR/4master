@@ -1,32 +1,11 @@
 #EXTM3U
-#EXTINF:-1 tvg-logo="https://goo.gl/qD8cax" group-title="INFORMAÃ‡Ã•ES: CLIQUE AQUI!", Tela SÃ©ries
-http://0.0.0.0
-#EXTINF:-1 tvg-logo="https://goo.gl/qD8cax" group-title="INFORMAÃ‡Ã•ES: CLIQUE AQUI!", SÃ‰RIES ESTÃƒO NA QUALIDADE EM SD
+#EXTINF:-1 tvg-logo="https://goo.gl/qD8cax" group-title="INFORMAÇÕES: CLIQUE AQUI!", 4TEAM K-DRAMA
 http://0.0.0.0
 #EXTINF:-1 tvg-logo="http://www.listaiptvvip.com/wp-content/uploads/2017/12/lista-iptv-vip.png" group-title="MELHOR LISTA DE CANAIS", WHATS (19) 998509928
 http://0.0.0.0
 
 ############## Viki #################  
-#EXTINF:-1 tvg-id="1" group-title="Viki" tvg-name="Viki" tvg-logo="http://logo-do-canal-de-esportes.jpg",T1|EP1 DOOM AT YOUR SERVICE
-https://drive.google.com/file/d/1OkSYWK3L2elU6sKa8MUHCzjWykPS3plh/preview
-#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Viki", T1|EP1 DOOM AT YOUR SERVICE
-https://video.wixstatic.com/video/377eb2_fec70796e68b462baf368f6cd08f29c9/720p/mp4/file.mp4
-#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Viki", ARW T1|EP2
-http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/02-BAIXO.mp4
-#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Viki", ARW T1|EP3
-http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/03-BAIXO.mp4
-#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Viki", ARW T1|EP4
-http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/04-BAIXO.mp4
-
-############## Netflix #################  
-#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Netflix", T1|EP1
-http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/01-BAIXO.mp4
-#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Netflix", ARW T1|EP2
-http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/02-BAIXO.mp4
-#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Netflix", ARW T1|EP3
-http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/03-BAIXO.mp4
-#EXTINF:-1 tvg-logo="https://goo.gl/JWzV9j" tvg-name="Viki" group-title="Netflix", ARW T1|EP4
-http://cdn12.ntcdn.us/content/sobdemanda/netcine-bucket/arrow/01dub/04-BAIXO.mp4
-
-#EXTINF:-1 tvg-logo="https://goo.gl/2uDJ2f" group-title="6Â° TEMPORADA", ARW T6|EP16 (LEG)
-http://cdn12.ntcdn.us/content/httpdelivery/arrow/06leg/16-BAIXO.mp4
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/03/1-18.jpg" group-title="Viki", T1|EP1 DOOM AT YOUR SERVICE
+https://ok.ru/videoembed/4257168165574
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/03/1-18.jpg" group-title="Viki", T1|EP2 DOOM AT YOUR SERVICE
+https://ok.ru/videoembed/2768252897966
