@@ -1,6 +1,6 @@
 #EXTM3U
 #EXTINF:-1 tvg-logo="https://goo.gl/qD8cax" type="video" group-title="INFORMAÃ‡Ã•ES: CLIQUE AQUI!", Tela SÃ©ries
-https://www.googleapis.com/drive/v3/files/1gwFh-dW-3FzzzQtXla5oHXwqgm8CsSAV=media&key=100160041530617838033
+https://vimeo.com/790845102
 #EXTINF:-1 tvg-logo="https://goo.gl/qD8cax" group-title="INFORMAÃ‡Ã•ES: CLIQUE AQUI!", SÃ‰RIES ESTÃƒO NA QUALIDADE EM SD
 https://drive.google.com/u/1/uc?id=1gwFh-dW-3FzzzQtXla5oHXwqgm8CsSAV&export=download
 #EXTINF:-1 tvg-logo="http://www.listaiptvvip.com/wp-content/uploads/2017/12/lista-iptv-vip.png" group-title="MELHOR LISTA DE CANAIS", WHATS (19) 998509928
@@ -8,9 +8,11 @@ https://drive.google.com/u/1/uc?id=1gwFh-dW-3FzzzQtXla5oHXwqgm8CsSAV&export=down
 
 ############## Viki #################  
 #EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/03/1-18.jpg" group-title="Viki", T1|EP1 DOOM AT YOUR SERVICE
-https://public.dm.files.1drv.com/y4mk4tpN4S4ve7M_myx1WtiZnuGcVHAWvnJegEkpLMOFmedU4I1xRb_VCtfyOuDdmK35BJq1QYAzKzO_HjKUfKynrGk333ZefNZSwXuDLgIxhbjwAUUmObJOUHdYurUF1eZCkPQFn6_GxX_tr-YwPETqc5V2-cu8OzHn2ZGRoCdQc9fxdZ0eMGfovDBIgqiRMEY2TAL0qiUox7-MyD-on4qjDhFRWkIkuEc24AdtNOWbnA?
+http://mi1.4team.ga:8080/viki/DOOM%20AT%20YOUR%20SERVICE/1.avi
 #EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/03/1-18.jpg" group-title="Viki", T1|EP2 DOOM AT YOUR SERVICE
-https://public.dm.files.1drv.com/y4mDd_Aejvxx4y52eTBVZ8E-Zkc14ot2ANAzDk4K1vugtf5cp7N32-iWj0dDMGDWmSY-KJlXzpgoJW6AkVgVihpat110jkcIoPY6ziX_zHX-2XmWRXK1_yveLmWUID2TQKBiamBEkH1VZoC91jl1-EnEnUHwJPz2BcKvJF8R9dssbNXfhN7q4Emj9sGa1jpG_mcbXaHjr-V382I96sPRsfj5zQcXKEz9lbPkIE-E6HZy70?
+http://mi1.4team.ga:8080/viki/DOOM%20AT%20YOUR%20SERVICE/2.avi
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/03/1-18.jpg" group-title="Viki", T1|EP2 DOOM AT YOUR SERVICE
+http://mi1.4team.ga:8080/viki/DOOM%20AT%20YOUR%20SERVICE/3.avi
 
 ############## Viki #################  
 #EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" group-title="Viki", T1|EP1 GAUS ELETRONIC
@@ -27,3 +29,5 @@ http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/5.mp4
 http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/6.mp4
 #EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" group-title="Viki", T1|EP7 GAUS ELETRONIC
 http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/7.mp4
+#EXTINF:-1 tvg-logo="https://doramogo.com/wp-content/uploads/2022/10/0-5.jpg" group-title="Viki", T1|EP7 GAUS ELETRONIC
+http://mi1.4team.ga:8080/viki/Gaus%20Eletronic/8.mp4
