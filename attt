@@ -1,0 +1,75 @@
+{
+  "Version": "1.0.0",
+  "ReleaseNotes": "NOVA ATUALIZAÇÃO",
+  "UrlUpdate": "LINK DE ATUALIZAÇÃO AQUI",
+  "Sms": "",
+  "EmailFeedback": "",
+  "UrlContato": "",
+  "UrlTermos": "https://paste.anasor.com/paste.php?raw&id=10387",
+  "CheckUser": "true",
+  "Udp": [
+      {
+          "Porta": "7300"
+      },
+      {
+          "Porta": "7200"
+      },
+      {
+          "Porta": "7100"
+      }
+  "Servers": [
+      {
+          "Name": "⚡ 4TEAM SERVER ⚡",
+          "TYPE": "premium",
+          "FLAG": "br.png",
+          "ServerIP": "mi1.4team.ga",
+          "CheckUser": "http://47.87.156.161:5000/checkUser",
+          "ServerPort": "35556",
+          "SSLPort": "443",
+          "USER": "",
+          "PASS": ""
+      }
+  ],
+  "Networks": [
+      {
+          "Name": "╰┈[☞>📱TIM 📡",
+          "FLAG": "tim",
+          "Payload": "",
+          "SNI": "",
+          "TlsIP": "",
+          "ProxyIP": "",
+          "ProxyPort": "443",
+          "Info": "Tlsws"
+      },
+{
+          "Name": "╰┈[☞>📱VIVO 📡",
+          "FLAG": "vivo",
+          "Payload": "",
+          "SNI": "",
+          "TlsIP": "",
+          "ProxyIP": "",
+          "ProxyPort": "443",
+          "Info": "Tlsws"
+      },
+{
+          "Name": "╰┈[☞>📱CLARO 📡",
+          "FLAG": "claro",
+          "Payload": "",
+          "SNI": "",
+          "TlsIP": "",
+          "ProxyIP": "",
+          "ProxyPort": "443",
+          "Info": "Tlsws"
+      },
+{
+          "Name": "╰┈[☞>📱OI 📡",
+          "FLAG": "oi",
+          "Payload": "",
+          "SNI": "",
+          "TlsIP": "",
+          "ProxyIP": "",
+          "ProxyPort": "443",
+          "Info": "Tlsws"
+      }
+  ]
+}
