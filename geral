@@ -105,6 +105,8 @@ nano /etc/ssh/ssh_config
     ServerAliveCountMax 2
     TCPReceiveWindow 64
     TCPSendWindow 64
+    CompressionLevel 4
+    Compression yes
     
 Adicione isso no arquivo sshd_config:
 PermitRootLogin yes
