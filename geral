@@ -30,21 +30,24 @@ OPTIONS="-u bind -4"
 nano /etc/bind/named.conf.options
 systemctl restart bind9
 
+    	minimal-responses yes;
+
+	auth-nxdomain no;
+	min-cache-ttl 90;
+ 	max-ncache-ttl 300;
 	dnssec-enable yes;
 	dnssec-validation yes;
 	dnssec-lookaside auto;
 
 	//listen-on-v6 { any; };
-        listen-on port 53 { localhost; 0.0.0.0/0; };
-	allow-query { localhost; 0.0.0.0/0; };
+        listen-on port 53 { any; };
+	allow-query { any; };
 	recursion yes;
 	forwarders {
-	        127.0.0.1;
-		0.0.0.0;
+		205.151.222.250;
 		8.8.4.4;
-                205.151.222.250;
-		
-        };
+		1.1.1.1;
+	};
 };
 
 nano /etc/resolv.conf
