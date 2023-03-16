@@ -23,8 +23,8 @@
 /sbin/iptables -A INPUT -p tcp -m conntrack --ctstate NEW -j DROP
 
 ### SSH brute-force protection ###
-/sbin/iptables -A INPUT -p tcp --dport ssh -m conntrack --ctstate NEW -m recent --set
-/sbin/iptables -A INPUT -p tcp --dport ssh -m conntrack --ctstate NEW -m recent --update --seconds 60 --hitcount 10 -j DROP
+/sbin/iptables -A INPUT -p tcp --dport 35556 -m conntrack --ctstate NEW -m recent --set
+/sbin/iptables -A INPUT -p tcp --dport 35556 -m conntrack --ctstate NEW -m recent --update --seconds 60 --hitcount 10 -j DROP
 
 ### 2: Drop TCP packets that are new and are not SYN ###
 /sbin/iptables -t mangle -A PREROUTING -p tcp ! --syn -m conntrack --ctstate NEW -j DROP
@@ -32,16 +32,38 @@
 ### 3: Drop SYN packets with suspicious MSS value ###
 /sbin/iptables -t mangle -A PREROUTING -p tcp -m conntrack --ctstate NEW -m tcpmss ! --mss 536:65535 -j DROP
 
-### 4: Block packets with bogus TCP flags ###
-/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
-/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
-/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
-/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags FIN,RST FIN,RST -j DROP
-/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags FIN,ACK FIN -j DROP
+### [INPUT] ###
+/sbin/iptables -A INPUT -i lo -j ACCEPT # Unlimited traffic on loopback
+/sbin/iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT # Established connections
+/sbin/iptables -A FORWARD -i eth0 -p tcp -m tcp -m multiport --dports 35556,53 -m state --state INVALID,UNTRACKED -j SYNPROXY --sack-perm --timestamp --wscale 7 --mss 1460 # Catching state: UNTRACKED == SYN packets, INVALID   == ACK from 3WHS
+/sbin/iptables -A FORWARD -i eth0 -p tcp -m tcp -m multiport --dports 35556,53 -m state --state INVALID -j DROP # Drop rest of state INVALID, this will e.g. catch SYN-ACK packet attacks
+
+### [OUTPUT] ###
+/sbin/iptables -A OUTPUT -o lo -j ACCEPT # Unlimited traffic on loopback
+/sbin/iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT # Established connections
+/sbin/iptables -A OUTPUT -p tcp -m tcp --tcp-flags ALL ACK,SYN -j ACCEPT # Allow the response to the SYN for the 3WHS before the connection is marked as established
+/sbin/iptables -A OUTPUT -p tcp -m tcp -m multiport --dports 80,443 -m conntrack --ctstate NEW -j ACCEPT # OS updates and Vote reward
+
+
+/sbin/iptables -t mangle -A PREROUTING -i eth0 -p tcp -m tcp --syn -m multiport --dports 35556 -m connlimit --connlimit-above 5 --connlimit-mask 32 --connlimit-saddr -j log_limit_conn # Limit concurrent conn per IP
+/sbin/iptables -t mangle -A PREROUTING -i eth0 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK ACK -m multiport --dports 35556,53 -m conntrack --ctstate INVALID -m hashlimit --hashlimit-above 5/sec --hashlimit-burst 10 --hashlimit-mode srcip --hashlimit-srcmask 24 --hashlimit-name limit_synproxy_ack -j log_limit_synproxy_ack # Ratelimit the ACK from 3WHS handled by SYNPROXY
+/sbin/iptables -t mangle -A PREROUTING -i eth0 -p tcp -m tcp --syn -m multiport --dports 35556,53 -m hashlimit --hashlimit-above 5/sec --hashlimit-burst 10 --hashlimit-mode srcip --hashlimit-name limit_syn --hashlimit-srcmask 24 -j log_limit_syn # Limit SYN
+
+/sbin/iptables -t raw -A PREROUTING -i eth0 -p tcp -m tcp --syn -m multiport --dports 35556,53 -j CT --notrack # SYNPROXY works on untracked conntracks, it will create the appropiate conntrack proxied TCP conn
+
+/sbin/iptables -t mangle -A PREROUTING -p tcp ! --syn -m conntrack --ctstate NEW -j DROP # Drop TCP packets that are new and are not SYN
+/sbin/iptables -t mangle -A PREROUTING -p tcp -m conntrack --ctstate NEW -m tcpmss ! --mss 536:65535 -j DROP # Drop SYN packets with suspicious MSS value
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags ACK,FIN FIN -j DROP # Block packets with bogus TCP flags
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags ACK,PSH PSH -j DROP # Limit SYN
 /sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags ACK,URG URG -j DROP
-/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags ACK,FIN FIN -j DROP
-/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags ACK,PSH PSH -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags FIN,RST FIN,RST -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL ALL -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL NONE -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,PSH,URG -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL SYN,FIN,PSH,URG -j DROP
+/sbin/iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
 
 ### 1: Drop invalid packets ###
 /sbin/iptables -t mangle -A PREROUTING -m conntrack --ctstate INVALID -j DROP
@@ -60,42 +82,10 @@
 /sbin/iptables -I INPUT -p icmp -m hashlimit --hashlimit-name icmp --hashlimit-mode srcip --hashlimit 3/second --hashlimit-burst 5 -j ACCEPT
 
 ##########################################
-# Allow all loopback (lo) traffic and reject traffic
-# to localhost that does not originate from lo.
-/sbin/iptables -A INPUT -i lo -j ACCEPT
-/sbin/iptables -A INPUT ! -i lo -s 127.0.0.0/8 -j REJECT
-/sbin/iptables -A OUTPUT -o lo -j ACCEPT
-
-# Allow Saida
-/sbin/iptables -A OUTPUT -j ACCEPT
-
-#DNS
-/sbin/iptables -A INPUT -i eth0 -p udp -m state --state NEW,ESTABLISHED --dport 53-j ACCEPT
-/sbin/iptables -A OUTPUT -o eth0 -p tcp -m state --state ESTABLISHED --dport 53 -j ACCEPT
-/sbin/iptables -A INPUT -i tun0 -p udp -m state --state NEW,ESTABLISHED --dport 53-j ACCEPT
-/sbin/iptables -A OUTPUT -o tun0 -p tcp -m state --state ESTABLISHED --dport 53 -j ACCEPT
-/sbin/iptables -A INPUT -m state --state NEW -m udp -p udp --dport 53 -j DNS
-/sbin/iptables -A INPUT -m state --state NEW -m tcp -p tcp --dport 53 -j ACCEPT
-/sbin/iptables -A DNS -m recent --name DNS --update --seconds 15 --hitcount 16 -j DROP
-/sbin/iptables -A DNS -m recent --name DNS --set -j ACCEPT
-
-# Allow SSH.
-#/sbin/iptables -A INPUT -i eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 35556 -j ACCEPT
-#/sbin/iptables -A OUTPUT -o eth0 -p tcp -m state --state ESTABLISHED --dport 35556 -j ACCEPT
-#/sbin/iptables -A INPUT -i eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 35557 -j ACCEPT
-#/sbin/iptables -A OUTPUT -o eth0 -p tcp -m state --state ESTABLISHED --dport 35557 -j ACCEPT
 
 #MTU
 /sbin/iptables -I FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
 /sbin/iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -m tcpmss --mss 1400:1472 -j TCPMSS --clamp-mss-to-pmtu
-
-# Allow SSH Entrada.
-#/sbin/iptables -A INPUT -i eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 443 -j ACCEPT
-#/sbin/iptables -A OUTPUT -o eth0 -p tcp -m state --state ESTABLISHED --dport 443 -j ACCEPT
-
-# Allow Proxy.
-#/sbin/iptables -A INPUT -i eth0 -p tcp -m state --state NEW,ESTABLISHED --dport 1080 -j ACCEPT
-#/sbin/iptables -A OUTPUT -o eth0 -p tcp -m state --state ESTABLISHED --dport 1080 -j ACCEPT
 
 # QOS
 /sbin/iptables -t mangle -I INPUT -m connbytes --connbytes 512000: --connbytes-dir both --connbytes-mode bytes -j TOS --set-tos Maximize-Throughput
