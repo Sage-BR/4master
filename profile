@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ProxifierProfile version="102" platform="Windows" product_id="0" product_minver="400">
+	<Options>
+		<Resolve>
+			<AutoModeDetection enabled="false" />
+			<ViaProxy enabled="false" />
+			<BlockNonATypes enabled="false" />
+			<ExclusionList OnlyFromListMode="false">localhost;%SimpleHostnames%;%ComputerName%;*.local;127.0.0.1</ExclusionList>
+			<DnsUdpMode>0</DnsUdpMode>
+		</Resolve>
+		<Encryption mode="disabled" />
+		<ConnectionLoopDetection enabled="true" resolve="true" />
+		<Udp mode="mode_bypass" />
+		<LeakPreventionMode enabled="false" />
+		<ProcessOtherUsers enabled="false" />
+		<ProcessServices enabled="true" />
+		<HandleDirectConnections enabled="false" />
+		<HttpProxiesSupport enabled="false" />
+	</Options>
+	<ProxyList>
+		<Proxy id="100" type="SOCKS5">
+			<Options>304</Options>
+			<Port>443</Port>
+			<Address>127.0.0.1</Address>
+			<Label>TCP</Label>
+		</Proxy>
+		<Proxy id="101" type="SOCKS5">
+			<Options>304</Options>
+			<Port>7300</Port>
+			<Address>127.0.0.1</Address>
+			<Label>UDP</Label>
+		</Proxy>
+	</ProxyList>
+	<ChainList>
+		<Chain id="102" type="redundancy">
+			<RedundancyRecheckTime>60</RedundancyRecheckTime>
+			<RedundancyRecheck>false</RedundancyRecheck>
+			<RedundancyTryDirect>false</RedundancyTryDirect>
+			<RedundancyTimeout>1</RedundancyTimeout>
+			<Proxy enabled="true">100</Proxy>
+			<Proxy enabled="true">101</Proxy>
+			<Name>PORTS</Name>
+		</Chain>
+	</ChainList>
+	<RuleList>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Targets>googletagmanager.com;accounts.google.com;www.nexon.com</Targets>
+			<Name>Navegador IPblock</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Direct" />
+			<Targets>akamai-gamecdn.playkakaogames.com;*.google.com;*.facebook.com;akamai-webcdn.kgstatic.net;dns.google;content-people.googleapis.com;*.google-analytics.com;*.facebook.net;recaptcha.net;*.twitch.tv;www.google.com.br;www.google.com;web.nxfs.nexon.com;*.doubleclick.net;127.0.0.1;fonts.gstatic.com;www.google.*;updater.nclauncher.ncsoft.com;*.googleapis.com;vindictus.dn.nexoncdn.co.kr;naeu-o-dn.playblackdesert.com;*.youtube.com;*.googlevideo.com;2607:f8b0:4008:814::200d</Targets>
+			<Applications>nexon_client.exe;cefsharp.browsersubprocess.exe; nexon_runtime.exe;NCLauncher2.exe;Matryoshka.exe;Wow.exe;ELYON.exe;BlackDesertLauncher.exe;BlackDesertPatcher32.pae;BlackDesert64.exe;ACPhoenix.exe;MadWorld.exe;Mad-Win64-Shipping.exe;elementclient.exe; elementclient32.exe;GrandFantasia.exe</Applications>
+			<Name>Direct Hosts</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Direct" />
+			<Ports>80;443</Ports>
+			<Applications>Aion.bin;Raiderz.exe;L2.bin;L2.exe;game.exe;BNSR.exe;gujianol.exe;archeage.exe;CabalMain.exe;cabal.exe;eso64.exe;Gw2-64.exe;Vindictus_x64.exe;Vindictus.exe;TERA.exe;Wow.exe;archeworld.exe;Conquer.exe;elyon.exe;UNDECEMBER-Win64-Shipping.exe;ACPhoenix.exe;Mad-Win64-Shipping.exe;EOS.exe</Applications>
+			<Name>Direct Ports</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>nexon_client.exe;cefsharp.browsersubprocess.exe;nexon_agent.exe; nexon_launcher.exe; nexon_runtime.exe;BlackDesertLauncher.exe;BlackDesertPatcher32.pae</Applications>
+			<Name>Launchers</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>gujianol.exe</Applications>
+			<Name>Swords Of Legends</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>GrandFantasia.exe</Applications>
+			<Name>Grand Fantasia Eternal</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>Mad-Win64-Shipping.exe</Applications>
+			<Name>Night Crows</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>elementclient.exe; elementclient32.exe</Applications>
+			<Name>Jade Dynasty Reborn</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>ACPhoenix.exe</Applications>
+			<Name>Auto Chess</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>MadWorld.exe</Applications>
+			<Name>Mad World</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>EOS.exe</Applications>
+			<Name>EOS</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>ravendawn_dx-*.exe</Applications>
+			<Name>Revendawn</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>DCGAME.exe;DD.exe</Applications>
+			<Name>DC Universe</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>ELYON.exe</Applications>
+			<Name>iElyon</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>UNDECEMBER-Win64-Shipping.exe</Applications>
+			<Name>Undecember</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>Wow.exe</Applications>
+			<Name>World Of Warcraft</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>Gw2-64.exe</Applications>
+			<Name>Guild Wars 2</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>ffxiv_dx11.exe</Applications>
+			<Name>FFXIV</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>CabalMain.exe;cabal.exe</Applications>
+			<Name>Cabal</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>BlackDesert64.exe</Applications>
+			<Name>Black Desert NA</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>BNSR.exe;CefSharp.BrowserSubprocess.exe</Applications>
+			<Name>Blade and Soul</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>game.exe</Applications>
+			<Name>Shaya/Forsaken</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>TERA.exe</Applications>
+			<Name>Tera</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>dota2.exe</Applications>
+			<Name>Dota 2</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>eso64.exe</Applications>
+			<Name>The Elder Scrolls Online</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>Aion.bin</Applications>
+			<Name>Aion</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>Conquer.exe</Applications>
+			<Name>Conquer</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>Archeage.exe;subprocess.exe;archeworld.exe</Applications>
+			<Name>Archeage</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>Vindictus_x64.exe;Vindictus.exe</Applications>
+			<Name>Vindictus</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>L2.bin;L2.exe</Applications>
+			<Name>Lineage 2</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Chain">102</Action>
+			<Applications>Raiderz.exe</Applications>
+			<Name>RaiderZ</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Direct" />
+			<Targets>localhost; 127.0.0.1; ::1; 0.0.0.0; %ComputerName%; *.local;*.test;0:0:0:0:0:0:0:0-7fff:ffff:ffff:ffff:ffff:ffff:ffff:ffff;127.0.0.0-127.255.255.255;10.0.0.0-10.255.255.255;172.16.0.0-172.31.255.255;192.168.0.0-192.168.255.255;100.64.0.0-100.127.255.255;captive.apple.com;*.crashlytics.com;1.0.0.1;</Targets>
+			<Name>Localhost</Name>
+		</Rule>
+		<Rule enabled="true">
+			<Action type="Direct" />
+			<Name>Default</Name>
+		</Rule>
+	</RuleList>
+</ProxifierProfile>
