@@ -1,0 +1,38 @@
+        private void label4_Click(object sender, EventArgs e)
+        {
+            string comando = "ping -n 4 ns.execulink.com";
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = $"/C \"ssh -D {proxyPort} 4tunnel@{proxyHost} \\\"{comando}\\\"\"",
+                UseShellExecute = false,
+                RedirectStandardOutput = true
+            };
+
+            try
+            {
+                using (Process processo = new Process())
+                {
+                    processo.StartInfo = startInfo;
+                    processo.Start();
+                    processo.WaitForExit();
+
+                    // Medir o ping
+                    Ping ping = new Ping();
+                    PingReply reply = ping.Send(proxyHost, pingTimeout);
+                    if (reply.Status == IPStatus.Success)
+                    {
+                        label4.Text = "Ping: " + reply.RoundtripTime.ToString() + "ms\n";
+                        label4.Text += processo.StandardOutput.ReadToEnd();
+                    }
+                    else
+                    {
+                        label4.Text = "Erro ao medir o ping.";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                label4.Text = "Erro: " + ex.Message;
+            }
+        }
