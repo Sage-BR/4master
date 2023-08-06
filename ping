@@ -36,3 +36,8 @@
                 label4.Text = "Erro: " + ex.Message;
             }
         }
+
+
+        private string proxyHost = "5.252.24.190";
+        private int proxyPort = 443;
+        private int pingTimeout = 5000; // 5 segundos
