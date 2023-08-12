@@ -96,7 +96,7 @@ TCPKeepAlive yes
 #PermitUserEnvironment no
 #Compression yes
 ClientAliveInterval 60
-ClientAliveCountMax 2
+ClientAliveCountMax 3
 UseDNS no
 #PidFile /var/run/sshd.pid
 MaxStartups 3:50:100
@@ -123,3 +123,4 @@ PasswordAuthentication yes
 Ciphers chacha20-poly1305@openssh.com,aes128-ctr
 KexAlgorithms diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1
 MACs hmac-sha1
+IPQoS lowdelay throughput
