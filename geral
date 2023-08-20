@@ -101,15 +101,19 @@ Terceiro Comando: Configurando SSHD para liberar acesso pelo root:
 nano /etc/ssh/sshd_config
 nano /etc/ssh/ssh_config
 
+    SendEnv LANG LC_*
+    HashKnownHosts yes
+    GSSAPIAuthentication no
     ControlMaster auto
-    ControlPath - /.ssh/sockets/%r%h-%p
+    ControlPath ~/.ssh/-%r@%h:%p
     ControlPersist 600
-    ServerAliveInterval 160
+    ServerAliveInterval 30
     ServerAliveCountMax 2
-    TCPReceiveWindow 64
-    TCPSendWindow 64
-    CompressionLevel 4
-    Compression yes
+    TCP_NODELAY yes
+    TCPWindowScaling yes
+    UseRoaming no
+    TCPQuickAck yes
+    TCPMaxSegSize 576
     
 Adicione isso no arquivo sshd_config:
 PermitRootLogin yes
