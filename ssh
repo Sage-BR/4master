@@ -11,7 +11,6 @@
 # default value.
 
 Port 35556
-Port 443
 #AddressFamily any
 #ListenAddress 0.0.0.0
 #ListenAddress ::
@@ -85,7 +84,7 @@ UsePAM yes
 
 #AllowAgentForwarding yes
 AllowTcpForwarding yes
-#GatewayPorts yes
+GatewayPorts yes
 X11Forwarding no
 #X11DisplayOffset 10
 #X11UseLocalhost yes
@@ -120,7 +119,7 @@ Subsystem	sftp	/usr/lib/openssh/sftp-server
 #	PermitTTY no
 #	ForceCommand cvs server
 PasswordAuthentication yes
-Ciphers chacha20-poly1305@openssh.com,aes128-ctr
-KexAlgorithms diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1
-MACs hmac-sha1
+Ciphers chacha20-poly1305@openssh.com
+KexAlgorithms diffie-hellman-group1-sha1
+MACs hmac-md5
 IPQoS lowdelay throughput
