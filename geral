@@ -5,7 +5,7 @@ delete from accounts where created_time < now() - interval 14 DAY AND accessLeve
 nano /etc/openvpn/server.conf
 /etc/init.d/openvpn restart
 
-47.87.156.161
+47.87.156.155
 
 openssl speed -evp aes128-cbc
 
