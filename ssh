@@ -84,7 +84,7 @@ UsePAM yes
 
 #AllowAgentForwarding yes
 AllowTcpForwarding yes
-GatewayPorts yes
+#GatewayPorts yes
 X11Forwarding no
 #X11DisplayOffset 10
 #X11UseLocalhost yes
@@ -120,6 +120,6 @@ Subsystem	sftp	/usr/lib/openssh/sftp-server
 #	ForceCommand cvs server
 PasswordAuthentication yes
 Ciphers chacha20-poly1305@openssh.com
-KexAlgorithms diffie-hellman-group1-sha1
-MACs hmac-md5
+KexAlgorithms curve25519-sha256@libssh.org
+MACs hmac-sha2-256
 IPQoS lowdelay
