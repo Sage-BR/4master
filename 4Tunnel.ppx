@@ -56,8 +56,8 @@
 		</Rule>
 		<Rule enabled="true">
 			<Action type="Direct" />
-			<Ports>80;443</Ports>
-			<Applications>Aion.bin;Raiderz.exe;L2.bin;L2.exe;game.exe;BNSR.exe;gujianol.exe;archeage.exe;CabalMain.exe;cabal.exe;eso64.exe;Gw2-64.exe;Vindictus_x64.exe;Vindictus.exe;TERA.exe;Wow.exe;archeworld.exe;Conquer.exe;elyon.exe;UNDECEMBER-Win64-Shipping.exe;ACPhoenix.exe;Mad-Win64-Shipping.exe;EOS.exe</Applications>
+			<Ports>80;443;53</Ports>
+			<Applications>Aion.bin;Raiderz.exe;L2.bin;L2.exe;game.exe;BNSR.exe;gujianol.exe;archeage.exe;CabalMain.exe;cabal.exe;eso64.exe;Gw2-64.exe;Vindictus_x64.exe;Vindictus.exe;TERA.exe;Wow.exe;archeworld.exe;Conquer.exe;elyon.exe;UNDECEMBER-Win64-Shipping.exe;ACPhoenix.exe;Mad-Win64-Shipping.exe;EOS.exe;aionclassic.bin</Applications>
 			<Name>Direct Ports</Name>
 		</Rule>
 		<Rule enabled="true">
@@ -172,7 +172,7 @@
 		</Rule>
 		<Rule enabled="true">
 			<Action type="Chain">102</Action>
-			<Applications>Aion.bin;aioncefprocess.exe</Applications>
+			<Applications>Aion.bin;aioncefprocess.exe; aionclassic.bin</Applications>
 			<Name>Aion</Name>
 		</Rule>
 		<Rule enabled="true">
