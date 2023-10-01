@@ -2,7 +2,7 @@
 <ProxifierProfile version="102" platform="Windows" product_id="0" product_minver="400">
 	<Options>
 		<Resolve>
-			<AutoModeDetection enabled="false" />
+			<AutoModeDetection enabled="true" />
 			<ViaProxy enabled="false" />
 			<BlockNonATypes enabled="false" />
 			<ExclusionList OnlyFromListMode="false">localhost;%SimpleHostnames%;%ComputerName%;*.local;127.0.0.1</ExclusionList>
@@ -53,12 +53,6 @@
 			<Targets>akamai-gamecdn.playkakaogames.com;*.google.com;*.facebook.com;akamai-webcdn.kgstatic.net;dns.google;content-people.googleapis.com;*.google-analytics.com;*.facebook.net;recaptcha.net;*.twitch.tv;www.google.com.br;www.google.com;web.nxfs.nexon.com;*.doubleclick.net;127.0.0.1;fonts.gstatic.com;www.google.*;updater.nclauncher.ncsoft.com;*.googleapis.com;vindictus.dn.nexoncdn.co.kr;naeu-o-dn.playblackdesert.com;*.youtube.com;*.googlevideo.com;2607:f8b0:4008:814::200d</Targets>
 			<Applications>nexon_client.exe;cefsharp.browsersubprocess.exe; nexon_runtime.exe;NCLauncher2.exe;Matryoshka.exe;Wow.exe;ELYON.exe;BlackDesertLauncher.exe;BlackDesertPatcher32.pae;BlackDesert64.exe;ACPhoenix.exe;MadWorld.exe;Mad-Win64-Shipping.exe;elementclient.exe; elementclient32.exe;GrandFantasia.exe;aioncefprocess.exe</Applications>
 			<Name>Direct Hosts</Name>
-		</Rule>
-		<Rule enabled="true">
-			<Action type="Direct" />
-			<Ports>80;443;53</Ports>
-			<Applications>Aion.bin;Raiderz.exe;L2.bin;L2.exe;game.exe;BNSR.exe;gujianol.exe;archeage.exe;CabalMain.exe;cabal.exe;eso64.exe;Gw2-64.exe;Vindictus_x64.exe;Vindictus.exe;TERA.exe;Wow.exe;archeworld.exe;Conquer.exe;elyon.exe;UNDECEMBER-Win64-Shipping.exe;ACPhoenix.exe;Mad-Win64-Shipping.exe;EOS.exe;aionclassic.bin</Applications>
-			<Name>Direct Ports</Name>
 		</Rule>
 		<Rule enabled="true">
 			<Action type="Chain">102</Action>
