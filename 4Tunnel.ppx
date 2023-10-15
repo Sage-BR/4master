@@ -60,6 +60,12 @@
 			<Name>Direct Hosts</Name>
 		</Rule>
 		<Rule enabled="true">
+			<Action type="Direct" />
+			<Ports>80;101</Ports>
+			<Applications>" WoW 9.2.7 Firestorm.exe"</Applications>
+			<Name>Direct Ports</Name>
+		</Rule>
+		<Rule enabled="true">
 			<Action type="Chain">102</Action>
 			<Applications>nexon_client.exe;cefsharp.browsersubprocess.exe;nexon_agent.exe; nexon_launcher.exe; nexon_runtime.exe;BlackDesertLauncher.exe;BlackDesertPatcher32.pae</Applications>
 			<Name>Launchers</Name>
@@ -121,7 +127,7 @@
 		</Rule>
 		<Rule enabled="true">
 			<Action type="Chain">102</Action>
-			<Applications>Wow.exe</Applications>
+			<Applications>Wow.exe;"WoW 9.2.7 Firestorm.exe"</Applications>
 			<Name>World Of Warcraft</Name>
 		</Rule>
 		<Rule enabled="true">
