@@ -6,4 +6,4 @@ latest_launch = 1.0.3
 from = 1.5.6.3
 to = 1.5.6.4
 url = https://loja4team.site/cdn/bs/patch/1.cpk
-md5 = 
+md5 = 02fe9f3f52e4ccfd4019881c5686aff8
