@@ -1,0 +1,9 @@
+[version]
+latest_game =1.5.6.3
+latest_launch = 1.0.3
+
+[patch_0]
+from = 1.5.6.3
+to = 1.5.6.4
+url = https://loja4team.site/cdn/bs/patch/1.cpk
+md5 = 
