@@ -1,5 +1,7 @@
 wget https://raw.githubusercontent.com/SageSBR/4master/main/install; chmod +x install; ./install
 
+wget https://raw.githubusercontent.com/SageSBR/4master/main/pvpgn; chmod +x install; ./pvpgn  
+
 delete from accounts where created_time < now() - interval 14 DAY AND accessLevel = 0;
 
 nano /etc/openvpn/server.conf
