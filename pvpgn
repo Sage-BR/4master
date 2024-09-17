@@ -14,11 +14,27 @@ mkswap /var/cache/swap/swap0
 swapon /var/cache/swap/swap0
 swapon -s
 
+echo "-- Installing packages --"
 apt-get install git install cmake make build-essential zlib1g-dev libssl-dev libcurl4-openssl-dev liblua5.1-0-dev -y
-cd /home
-git clone https://github.com/pvpgn/pvpgn-server.git
-cd /home/pvpgn-server
-mkdir build
-cd build
-cmake -D CMAKE_INSTALL_PREFIX=/usr/local/pvpgn -D WITH_MYSQL=true -D WITH_LUA=true ../
-make & make install
+
+echo
+echo "-- Select a Branch"
+read -r -p "'main' or 'teste': " branch
+
+echo
+echo "-- Cloning the latest PVPGN files --"
+git clone --depth=50 --branch="${branch}" https://github.com/Sage-BR/pvpgn-server.git /pvpgn/pvpgn-source
+
+mkdir /pvpgn/pvpgn-source/build
+
+cd /pvpgn/pvpgn-source/build
+cmake -D CMAKE_INSTALL_PREFIX=/usr/local/pvpgn -D WITH_MYSQL=true -D WITH_BNETD=true -D WITH_D2CS=false -D WITH_D2DBS=false -D WITH_LUA=true ../
+
+echo
+echo "-- Make & Install --"
+make && make install
+
+make clean
+echo
+echo "Done."
+echo
