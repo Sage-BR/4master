@@ -23,11 +23,11 @@ read -r -p "'main' or 'teste': " branch
 
 echo
 echo "-- Cloning the latest PVPGN files --"
-git clone --depth=50 --branch="${branch}" https://github.com/Sage-BR/pvpgn-server.git /pvpgn/pvpgn-source
+git clone --depth=50 --branch="${branch}" https://github.com/Sage-BR/pvpgn-server.git /root/pvpgn-server
 
-mkdir /pvpgn/pvpgn-source/build
+mkdir /root/pvpgn-server/build
 
-cd /pvpgn/pvpgn-source/build
+cd /root/pvpgn-server/build
 cmake -D CMAKE_INSTALL_PREFIX=/usr/local/pvpgn -D WITH_MYSQL=true -D WITH_BNETD=true -D WITH_D2CS=false -D WITH_D2DBS=false -D WITH_LUA=true ../
 
 echo
