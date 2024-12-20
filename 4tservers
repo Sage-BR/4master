@@ -1,3 +1,10 @@
+nano /etc/systemd/system/4tlboost.service
+
+systemctl daemon-reload
+journalctl -u 4tlboost.service -f
+
+systemctl start 4tlboost
+
 [Unit]
 Description=4TLBoost Service
 After=network.target mysql.service
