@@ -1,6 +1,6 @@
 nano /etc/systemd/system/4tlboost.service
-
 systemctl daemon-reload
+systemctl enable 4tlboost.service
 journalctl -u 4tlboost.service -f
 
 systemctl start 4tlboost
