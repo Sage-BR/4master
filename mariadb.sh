@@ -61,10 +61,12 @@ echo_info "Configurando usuário e permissões..."
 mysql -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$mariadb_password');"
 mysql -e "CREATE USER IF NOT EXISTS '$mariadb_user'@'%' IDENTIFIED BY '$mariadb_password';"
 mysql -e "GRANT ALL PRIVILEGES ON *.* TO '$mariadb_user'@'%' WITH GRANT OPTION;"
+mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('$mariadb_password');"
 mysql -e "FLUSH PRIVILEGES;"
 
 if [ "$allow_remote" == "y" ]; then
-    mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$mariadb_password';"
+    mysql -e "ALTER USER 'root'@'%' IDENTIFIED VIA mysql_native_password USING PASSWORD('$mariadb_password');"
+    mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;"
     mysql -e "FLUSH PRIVILEGES;"
 fi
 
