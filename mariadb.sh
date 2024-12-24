@@ -44,28 +44,28 @@ systemctl enable mariadb
 # Configura o arquivo de configuração do MariaDB
 cat <<EOF > /etc/mysql/mariadb.conf.d/99-custom.cnf
 [mysqld]
-bind-address = 0.0.0.0
 port = $mariadb_port
 EOF
 
 if [ "$allow_remote" == "y" ]; then
-    sed -i 's/^bind-address.*/bind-address = 0.0.0.0/' /etc/mysql/mariadb.conf.d/50-server.cnf
+    echo_info "Habilitando conexões remotas..."
+    echo "bind-address = 0.0.0.0" >> /etc/mysql/mariadb.conf.d/99-custom.cnf
 fi
 
 # Reinicia o MariaDB para aplicar as configurações
-echo_info "Reiniciando o MariaDB..."
+echo_info "Reiniciando o MariaDB para aplicar as configurações..."
 systemctl restart mariadb
 
 # Configura o usuário administrador e permissões
 echo_info "Configurando usuário e permissões..."
-mariadb -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$mariadb_password');"
-mariadb -e "CREATE USER IF NOT EXISTS '$mariadb_user'@'%' IDENTIFIED BY '$mariadb_password';"
-mariadb -e "GRANT ALL PRIVILEGES ON *.* TO '$mariadb_user'@'%' WITH GRANT OPTION;"
-mariadb -e "FLUSH PRIVILEGES;"
+mysql -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$mariadb_password');"
+mysql -e "CREATE USER IF NOT EXISTS '$mariadb_user'@'%' IDENTIFIED BY '$mariadb_password';"
+mysql -e "GRANT ALL PRIVILEGES ON *.* TO '$mariadb_user'@'%' WITH GRANT OPTION;"
+mysql -e "FLUSH PRIVILEGES;"
 
 if [ "$allow_remote" == "y" ]; then
-    mariadb -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$mariadb_password';"
-    mariadb -e "FLUSH PRIVILEGES;"
+    mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '$mariadb_password';"
+    mysql -e "FLUSH PRIVILEGES;"
 fi
 
 # Confirmação final
