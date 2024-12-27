@@ -1,16 +1,19 @@
-nano /etc/systemd/system/4tlboost.service
-systemctl daemon-reload
-systemctl enable 4tlboost.service
-journalctl -u 4tlboost.service -f
+nano /etc/systemd/system/4tl.service
 
-systemctl start 4tlboost
+systemctl daemon-reload
+
+systemctl enable 4tl.service
+
+journalctl -u 4tl.service -f
+
+systemctl start 4tl
 
 [Unit]
-Description=4TLBoost Service
+Description=4TL Service
 After=network.target mysql.service
 
 [Service]
-ExecStart=python3 4TLBoost.py
+ExecStart=python3 4tl.py
 ExecStop=/bin/kill -s SIGTERM $MAINPID
 Restart=on-failure
 User=root
