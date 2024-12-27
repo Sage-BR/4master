@@ -9,6 +9,8 @@ ulimit -HSn 32768
 
 apt install curl -y
 
+apt install python3 python3-pip -y
+
 bash <(curl -s https://raw.githubusercontent.com/SageSBR/4master/main/rc-local.txt)
 
 mkdir -p /backup/var/
@@ -16,14 +18,8 @@ wget https://raw.githubusercontent.com/SageSBR/4master/main/limpvar.sh;chmod +x 
 
 wget https://raw.githubusercontent.com/SageSBR/4master/main/mem.sh;chmod +x /root/mem.sh
 
-useradd -m 4tunnel -s /bin/rbash
-mkdir /home/4tunnel
-mkdir /home/4tunnel/bin
-chown root. /home/4tunnel/.profile
-chmod 755 /home/4tunnel/.profile
-
 apt install tuned tuned-utils tuned-utils-systemtap -y
-tuned-adm profile network-latency
+tuned-adm profile throughput-performance
 
 echo " "
 echo " == START == "
@@ -90,5 +86,3 @@ sysctl -p
 
 
 wget https://raw.githubusercontent.com/SageSBR/4master/main/update.sh; chmod +x update.sh
-
-wget https://raw.githubusercontent.com/SageSBR/ADM-MANAGER-ALPHA/main/instala.sh && chmod +x instala.sh* && ./instala.sh*
