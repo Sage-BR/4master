@@ -9,8 +9,6 @@ ulimit -HSn 32768
 
 apt install curl -y
 
-apt install python3 python3-pip -y
-
 bash <(curl -s https://raw.githubusercontent.com/SageSBR/4master/main/rc-local.txt)
 
 mkdir -p /backup/var/
