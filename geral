@@ -2,6 +2,8 @@ wget https://raw.githubusercontent.com/SageSBR/4master/main/install; chmod +x in
 
 wget https://raw.githubusercontent.com/SageSBR/4master/main/pvpgn; chmod +x pvpgn; ./pvpgn  
 
+wget https://raw.githubusercontent.com/SageSBR/4master/main/installpython; chmod +x installpython; ./installpython
+
 wget https://raw.githubusercontent.com/SageSBR/4master/main/mariadb.sh;chmod +x /root/mariadb.sh;./mariadb.sh
 
 wget https://raw.githubusercontent.com/SageSBR/4master/main/backup.sh;chmod +x /root/backup.sh
