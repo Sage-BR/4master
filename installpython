@@ -9,7 +9,15 @@ ulimit -HSn 32768
 
 apt install curl -y
 
-apt install python3 python3-pip -y
+apt install -y python3 python3-pip build-essential
+
+pip3 install discord.py
+pip3 install mysql-connector-python
+pip3 install DBUtils
+pip3 install dropbox
+pip3 install mega.py
+
+pip install mega.py
 
 bash <(curl -s https://raw.githubusercontent.com/SageSBR/4master/main/rc-local.txt)
 
