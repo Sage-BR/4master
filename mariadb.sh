@@ -41,6 +41,12 @@ echo_info "Configurando o MariaDB..."
 systemctl start mariadb
 systemctl enable mariadb
 
+# Verifica se o MariaDB está em execução
+if ! systemctl is-active --quiet mariadb; then
+    echo_error "O serviço MariaDB não está em execução."
+    exit 1
+fi
+
 # Configura o arquivo de configuração do MariaDB
 cat <<EOF > /etc/mysql/mariadb.conf.d/99-custom.cnf
 [mysqld]
@@ -58,16 +64,16 @@ systemctl restart mariadb
 
 # Configura o usuário administrador e permissões
 echo_info "Configurando usuário e permissões..."
-mysql -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$mariadb_password');"
-mysql -e "CREATE USER IF NOT EXISTS '$mariadb_user'@'%' IDENTIFIED BY '$mariadb_password';"
-mysql -e "GRANT ALL PRIVILEGES ON *.* TO '$mariadb_user'@'%' WITH GRANT OPTION;"
-mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password USING PASSWORD('$mariadb_password');"
-mysql -e "FLUSH PRIVILEGES;"
+mysql -u root -e "ALTER USER 'root'@'localhost' IDENTIFIED VIA mysql_native_password;"
+mysql -u root -e "SET PASSWORD FOR 'root'@'localhost' = PASSWORD('$mariadb_password');"
+mysql -u root -p"$mariadb_password" -e "CREATE USER IF NOT EXISTS '$mariadb_user'@'%' IDENTIFIED BY '$mariadb_password';"
+mysql -u root -p"$mariadb_password" -e "GRANT ALL PRIVILEGES ON *.* TO '$mariadb_user'@'%' WITH GRANT OPTION;"
+mysql -u root -p"$mariadb_password" -e "FLUSH PRIVILEGES;"
 
 if [ "$allow_remote" == "y" ]; then
-    mysql -e "ALTER USER 'root'@'%' IDENTIFIED VIA mysql_native_password USING PASSWORD('$mariadb_password');"
-    mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;"
-    mysql -e "FLUSH PRIVILEGES;"
+    mysql -u root -p"$mariadb_password" -e "ALTER USER 'root'@'%' IDENTIFIED VIA mysql_native_password USING PASSWORD('$mariadb_password');"
+    mysql -u root -p"$mariadb_password" -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;"
+    mysql -u root -p"$mariadb_password" -e "FLUSH PRIVILEGES;"
 fi
 
 # Confirmação final
