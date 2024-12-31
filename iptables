@@ -48,12 +48,12 @@
 /sbin/iptables -I INPUT -p icmp -m hashlimit --hashlimit-name icmp --hashlimit-mode srcip --hashlimit 3/second --hashlimit-burst 5 -j ACCEPT
 
 # Encaminhar conexões na porta 2106 e 7777 usando SYNPROXY
-/sbin/iptables -A FORWARD -i ens3 -p tcp -m multiport --dports 35556,53,3306,443,80 -m state --state INVALID,UNTRACKED -j SYNPROXY --sack-perm --timestamp --wscale 7 --mss 1460
-/sbin/iptables -A FORWARD -i ens3 -p tcp -m multiport --dports 35556,53,3306,443,80 -m state --state INVALID -j DROP
+/sbin/iptables -A FORWARD -i eth0 -p tcp -m multiport --dports 35556,53,3306,443,80 -m state --state INVALID,UNTRACKED -j SYNPROXY --sack-perm --timestamp --wscale 7 --mss 1460
+/sbin/iptables -A FORWARD -i eth0 -p tcp -m multiport --dports 35556,53,3306,443,80 -m state --state INVALID -j DROP
 
 # INPUT: Aceitar conexões nas portas especificadas
-/sbin/iptables -A INPUT -p tcp -m multiport --dports 35556,53,3306 -m conntrack --ctstate NEW -j ACCEPT
-/sbin/iptables -A INPUT -p udp -m multiport --dports 35556,53,3306 -m conntrack --ctstate NEW -j ACCEPT
+/sbin/iptables -A INPUT -p tcp -m multiport --dports 35556,53,3306,443,80 -m conntrack --ctstate NEW -j ACCEPT
+/sbin/iptables -A INPUT -p udp -m multiport --dports 35556,53,3306,443,80 -m conntrack --ctstate NEW -j ACCEPT
 
 # OUTPUT: Permitir saídas nas portas especificadas
 /sbin/iptables -A OUTPUT -p tcp -m multiport --dports 35556,53,3306,443,80 -m conntrack --ctstate NEW -j ACCEPT
@@ -71,7 +71,5 @@
 
 # Rejeitar todo o tráfego não permitido
 /sbin/iptables -A INPUT -j REJECT
-/sbin/iptables -A FORWARD -j REJECT
-/sbin/iptables -A OUTPUT -j REJECT
 
 exit 0
