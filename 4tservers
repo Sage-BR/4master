@@ -1,3 +1,14 @@
+cd /root/4TDKP
+python3 -m venv bot-env
+source bot-env/bin/activate
+bot-env\Scripts\activate.bat
+
+pip3 install discord.py
+pip3 install mysql-connector-python
+pip3 install DBUtils
+pip3 install dropbox
+pip3 install mega.py
+
 nano /etc/systemd/system/4tl.service
 
 systemctl daemon-reload
