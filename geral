@@ -161,3 +161,24 @@ nano /etc/security/limits.conf
 
 pfifo_fast
 fq_codel
+
+
+[Unit]
+Description=4TL Service
+After=network.target mysql.service
+
+[Service]
+Type=simple
+ExecStart=/root/4TDKP/bot-env/bin/python3 /root/4TDKP/4tdkp.py
+ExecStop=/bin/kill -s SIGTERM $MAINPID
+Restart=on-failure
+User=root
+WorkingDirectory=/root/4TDKP/
+Environment="PYTHONUNBUFFERED=1"
+Environment="HOME=/root"
+StandardOutput=journal
+StandardError=journal
+TimeoutStopSec=5
+
+[Install]
+WantedBy=multi-user.target
