@@ -1,3 +1,5 @@
+wget https://raw.githubusercontent.com/SageSBR/4master/main/installclean; chmod +x installclean; ./installclean
+
 wget https://raw.githubusercontent.com/SageSBR/4master/main/install; chmod +x install; ./install
 
 wget https://raw.githubusercontent.com/SageSBR/4master/main/pvpgn; chmod +x pvpgn; ./pvpgn  
