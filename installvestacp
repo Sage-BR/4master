@@ -1,0 +1,90 @@
+#!/bin/bash
+apt update
+apt -y dist-upgrade
+apt -y autoremove
+apt clean
+apt purge -y $(dpkg -l | awk '/^rc/ { print $2 }')
+
+ulimit -HSn 32768
+
+apt install curl -y
+
+bash <(curl -s https://raw.githubusercontent.com/SageSBR/4master/main/rc-local.txt)
+
+mkdir -p /backup/var/
+wget https://raw.githubusercontent.com/SageSBR/4master/main/limpvar.sh;chmod +x /root/limpvar.sh
+
+wget https://raw.githubusercontent.com/SageSBR/4master/main/mem.sh;chmod +x /root/mem.sh
+
+apt install tuned tuned-utils tuned-utils-systemtap -y
+tuned-adm profile throughput-performance
+
+echo " "
+echo " == START == "
+echo " * working out 'sysctl'"
+
+SYSCTL=/usr/sbin/sysctl
+
+echo " "
+echo " * 9 saved rules "
+
+${SYSCTL} -w fs.file-max=65536
+${SYSCTL} -w vm.swappiness=10
+${SYSCTL} -w vm.zone_reclaim_mode=0
+${SYSCTL} -w vm.dirty_background_ratio=2
+${SYSCTL} -w vm.dirty_ratio=60
+${SYSCTL} -w vm.vfs_cache_pressure=50
+${SYSCTL} -w net.ipv4.tcp_synack_retries=2
+${SYSCTL} -w net.ipv4.ip_local_port_range=2000 65535
+${SYSCTL} -w net.ipv4.tcp_rfc1337=1
+${SYSCTL} -w net.ipv4.tcp_syncookies=1
+${SYSCTL} -w net.ipv4.tcp_fin_timeout=15
+${SYSCTL} -w net.ipv4.tcp_keepalive_time=60
+${SYSCTL} -w net.core.default_qdisc=pfifo_fast
+${SYSCTL} -w net.ipv4.udp_early_demux=0
+${SYSCTL} -w net.ipv4.tcp_timestamps=0
+${SYSCTL} -w net.ipv4.tcp_sack=0
+${SYSCTL} -w net.ipv4.tcp_dsack=0
+${SYSCTL} -w net.ipv4.tcp_fack=0
+${SYSCTL} -w net.ipv4.tcp_window_scaling=1
+${SYSCTL} -w net.ipv4.ip_no_pmtu_disc=1
+${SYSCTL} -w net.ipv4.tcp_ecn=0
+${SYSCTL} -w net.ipv4.tcp_reordering=3
+${SYSCTL} -w net.ipv4.route.flush=1
+${SYSCTL} -w net.ipv4.tcp_mtu_probing=1
+${SYSCTL} -w net.ipv4.tcp_low_latency=1
+${SYSCTL} -w net.ipv4.tcp_slow_start_after_idle=0
+${SYSCTL} -w net.ipv4.tcp_congestion_control=bbr
+${SYSCTL} -w net.ipv4.tcp_fastopen=1
+${SYSCTL} -w net.ipv4.tcp_no_metrics_save=1
+${SYSCTL} -w net.ipv4.ip_forward=1
+${SYSCTL} -w net.ipv4.tcp_moderate_rcvbuf=1
+${SYSCTL} -w net.ipv4.tcp_adv_win_scale=-2
+${SYSCTL} -w net.ipv4.tcp_notsent_lowat=131072
+${SYSCTL} -w net.ipv4.tcp_rmem=4096 87380 8388608
+${SYSCTL} -w net.ipv4.tcp_wmem=4096 87380 8388608
+${SYSCTL} -w net.core.rmem_max=8388608
+${SYSCTL} -w net.core.wmem_max=8388608
+${SYSCTL} -w net.core.netdev_max_backlog=5000
+${SYSCTL} -w net.ipv4.tcp_tw_reuse=1
+${SYSCTL} -w net.ipv4.tcp_max_reordering=300
+${SYSCTL} -w net.ipv4.tcp_max_syn_backlog=819200
+${SYSCTL} -w net.ipv4.tcp_max_tw_buckets=262144
+${SYSCTL} -w net.ipv4.tcp_min_rtt_wlen=300
+${SYSCTL} -w net.ipv4.tcp_min_tso_segs=2
+${SYSCTL} -w net.ipv4.tcp_abort_on_overflow=0
+${SYSCTL} -w net.ipv4.tcp_app_win=31
+${SYSCTL} -w net.ipv4.tcp_autocorking=1
+${SYSCTL} -w net.ipv4.tcp_challenge_ack_limit=1000
+
+echo " "
+echo " == FINISH == "
+
+sysctl -p
+
+
+wget https://raw.githubusercontent.com/SageSBR/4master/main/update.sh; chmod +x update.sh
+
+curl -O http://c.myvestacp.com/vst-install-debian.sh
+
+bash vst-install-debian.sh --force --nginx no --apache yes --phpfpm no --vsftpd no --proftpd yes --exim yes --dovecot yes --spamassassin yes --clamav no --named yes --iptables yes --fail2ban yes --softaculous yes --remi yes --quota no --mysql yes --postgresql no --hostname 4teambr.com --email 4teambrsg@gmail.com --port 26574 --password Sa@26071989
