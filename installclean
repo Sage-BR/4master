@@ -4,6 +4,7 @@ apt -y dist-upgrade
 apt -y autoremove
 apt clean
 apt purge -y $(dpkg -l | awk '/^rc/ { print $2 }')
+apt -y install ca-certificates
 
 ulimit -HSn 32768
 
