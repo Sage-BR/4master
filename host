@@ -1,0 +1,26 @@
+mkdir /usr/local/hestia/data/templates/web/hooks
+cd /usr/local/hestia/data/templates/web/hooks/
+touch post_web_domain_add.sh
+
+#!/bin/bash
+# Hook para definir permissões automaticamente após criar um domínio no HestiaCP
+
+USER=$1
+DOMAIN=$2
+WEB_ROOT="/home/$USER/web/$DOMAIN/public_html"
+
+# Alterar dono para o usuário correto e grupo www-data
+chown -R $USER:www-data "$WEB_ROOT"
+
+# Definir permissões para pastas e arquivos
+find "$WEB_ROOT" -type d -exec chmod 775 {} \;
+find "$WEB_ROOT" -type f -exec chmod 664 {} \;
+
+# Garantir que novas pastas/arquivos herdem essas permissões
+setfacl -d -m u:$USER:rwx,g:www-data:rwx,o::rx "$WEB_ROOT"
+setfacl -m u:$USER:rwx,g:www-data:rwx,o::rx "$WEB_ROOT"
+
+# Mensagem de conclusão
+echo "Permissões ajustadas para $WEB_ROOT"
+
+
