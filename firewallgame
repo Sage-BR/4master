@@ -1,0 +1,121 @@
+#!/bin/sh -e
+#
+# rc.local
+#
+# This script is executed at the end of each multiuser runlevel.
+# Make sure that the script will "exit 0" on success or any other
+# value on error.
+#
+# In order to enable or disable this script just change the execution
+# bits.
+#
+# By default this script does nothing.
+
+# Policies default
+/sbin/iptables -P INPUT DROP
+/sbin/iptables -P FORWARD DROP
+/sbin/iptables -P OUTPUT ACCEPT
+
+# 🟢 Regras Básicas
+/sbin/iptables -A INPUT -i lo -j ACCEPT
+/sbin/iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+/sbin/iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+# Exceção para conexões vindas da VPN
+/sbin/iptables -I INPUT -i wg0 -p tcp -m conntrack --ctstate NEW -j ACCEPT
+
+# ❌ Bloquear Pacotes Inválidos
+/sbin/iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
+/sbin/iptables -A FORWARD -m conntrack --ctstate INVALID -j DROP
+
+# 🔐 Proteção contra SYN Flood
+/sbin/iptables -A INPUT -i eth0 -p tcp --syn -m limit --limit 1/s --limit-burst 3 -j ACCEPT
+/sbin/iptables -A INPUT -i eth0 -p tcp --syn -j DROP
+
+# 🔐 Proteção contra brute-force SSH (porta personalizada)
+/sbin/iptables -A INPUT -p tcp --dport 35556 -m conntrack --ctstate NEW -m recent --set
+/sbin/iptables -A INPUT -p tcp --dport 35556 -m conntrack --ctstate NEW -m recent --update --seconds 60 --hitcount 10 -j DROP
+
+# 🔍 Proteção contra Scan de Portas
+/sbin/iptables -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
+/sbin/iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
+/sbin/iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+
+# 📉 Limitar Conexões Simultâneas por IP
+/sbin/iptables -A INPUT -p tcp -m connlimit --connlimit-above 500 -j REJECT --reject-with tcp-reset
+
+# ⛔️ Limitar Novas Conexões TCP
+/sbin/iptables -A INPUT -p tcp -m conntrack --ctstate NEW -m limit --limit 60/s --limit-burst 20 -j ACCEPT
+/sbin/iptables -A INPUT -p tcp -m conntrack --ctstate NEW -j DROP
+
+# 📡 Limitar ICMP (Ping)
+/sbin/iptables -A INPUT -p icmp --icmp-type 8 -m conntrack --ctstate NEW -j ACCEPT
+
+# 3. QoS para VPN
+/sbin/iptables -t mangle -A POSTROUTING -o wg0 -j TOS --set-tos Minimize-Delay
+
+# 🌐 Permitir DNS (UDP e TCP)
+/sbin/iptables -A INPUT -p udp --sport 53 -j ACCEPT
+/sbin/iptables -A INPUT -p tcp --sport 53 -j ACCEPT
+/sbin/iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
+/sbin/iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
+
+# === REGRAS DE PROTEÇÃO ===
+# Permitir serviços essenciais (INPUT - tráfego local)
+# Inserir as regras no topo (posição correta)
+/sbin/iptables -I INPUT 1 -p tcp -m multiport --dports 2000,35556,3307,2106,7777,1194,80,443,447,1280,1250,1234 -j ACCEPT
+/sbin/iptables -I INPUT 2 -p tcp -m multiport --dports 1237,1239 -j ACCEPT
+
+/sbin/iptables -I INPUT 1 -i wg0 -j ACCEPT
+/sbin/iptables -I FORWARD 1 -i wg0 -j ACCEPT
+/sbin/iptables -I FORWARD 2 -o wg0 -j ACCEPT
+/sbin/iptables -A OUTPUT -o wg0 -j ACCEPT
+
+# Permitir forwarding da VPN
+/sbin/iptables -A FORWARD -i wg0 -o eth0 -s 10.66.66.0/24 -j ACCEPT
+
+# === REDIRECIONAMENTO VPS ===
+# DNAT - redirecionar porta 447 externa para o cliente
+/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 447  -j DNAT --to-destination 10.66.66.2:447
+/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 1234 -j DNAT --to-destination 10.66.66.2:1234
+/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 1237 -j DNAT --to-destination 10.66.66.2:1237
+/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 3306 -j DNAT --to-destination 10.66.66.2:3306
+/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 1280 -j DNAT --to-destination 10.66.66.2:1280
+/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 1250 -j DNAT --to-destination 10.66.66.2:1250
+/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 1239 -j DNAT --to-destination 10.66.66.2:1239
+/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 2000 -j DNAT --to-destination 10.66.66.2:2000
+
+# MASQUERADE - mascarar o tráfego de volta (mais simples que SNAT)
+#sbin/iptables -t nat -A POSTROUTING -o wg0 -d 10.66.66.2 -p tcp -m multiport --dports 2000,447,1280,1250,1234,1237,1239,3306,2106,7777 -j MASQUERADE
+
+# FORWARD rules - permitir o tráfego passar
+# De fora para o cliente via wg0
+/sbin/iptables -A FORWARD -i eth0 -o wg0 -d 10.66.66.2 -p tcp -m multiport --dports 2000,447,1280,1250,1234,1237,1239,3306,2106,7777 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+
+# Do cliente para fora
+/sbin/iptables -A FORWARD -i wg0 -o eth0 -s 10.66.66.2 -p tcp -m multiport --sports 2000,447,1280,1250,1234,1237,1239,3306,2106,7777 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+
+# === NOVAS REGRAS SYNPROXY (SEM PORTA 447) ===
+# SYNPROXY sem incluir porta 447 (para não interferir no redirecionamento)
+/sbin/iptables -A FORWARD -i eth0 -p tcp -m multiport --dports 2000,80,443,1280,1250,1234,1237,1239,3306,2106,7777 -m state --state INVALID,UNTRACKED -j SYNPROXY --sack-perm --timestamp --wscale 7 --mss 1460
+
+# DROP correspondente sem porta 447
+/sbin/iptables -A FORWARD -i eth0 -p tcp -m multiport --dports 2000,80,443,1280,1250,1234,1237,1239,3306,2106,7777 -m state --state INVALID -j DROP
+
+
+# 🔁 Encaminhamento com proteção SYNPROXY
+#/sbin/iptables -A FORWARD -i eth0 -p tcp -m multiport --dports 2000,9876,9877,3307,2106,7777,1194,80,443,447 -m state --state INVALID,UNTRACKED -j SYNPROXY --sack-perm #--timestamp --wscale 7 --mss 1460
+#/sbin/iptables -A FORWARD -i eth0 -p tcp -m multiport --dports 2000,9876,9877,3307,2106,7777,1194,80,443,447 -m state --state INVALID -j DROP
+
+# 🌍 Permitir saída para serviços web e portas necessárias
+/sbin/iptables -A OUTPUT -p tcp -m multiport --dports 2000,35556,80,443,447,1280,1250,1234,1237,1239,3306,2106,7777 -j ACCEPT
+
+# 🚦 QoS – Otimização de tráfego
+/sbin/iptables -t mangle -A POSTROUTING -m connbytes --connbytes 512000: --connbytes-dir both --connbytes-mode bytes -j TOS --set-tos Maximize-Throughput
+/sbin/iptables -t mangle -A POSTROUTING -m connbytes ! --connbytes 51200: --connbytes-dir both --connbytes-mode bytes -j TOS --set-tos Minimize-Delay
+
+# 🚫 Rejeitar todo tráfego não permitido explicitamente
+/sbin/iptables -A INPUT -j REJECT
+/sbin/iptables -A FORWARD -j REJECT
+
+exit 0
