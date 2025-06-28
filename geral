@@ -15,6 +15,20 @@ delete from accounts where created_time < now() - interval 14 DAY AND accessLeve
 nano /etc/openvpn/server.conf
 /etc/init.d/openvpn restart
 
+[Interface]
+PrivateKey =
+Address = 10.66.66.2/32, fd42:42:42::2/128
+DNS = 1.1.1.1, 8.8.8.8
+MTU = 1420
+
+[Peer]
+PublicKey = 
+PresharedKey = 
+AllowedIPs = 0.0.0.0/1, 128.0.0.0/1, ::/1, 8000::/1
+Endpoint = 
+PersistentKeepalive = 25
+
+
 47.87.156.155
 
 openssl speed -evp aes128-cbc
