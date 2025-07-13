@@ -2,6 +2,8 @@ mkdir /usr/local/hestia/data/templates/web/hooks
 cd /usr/local/hestia/data/templates/web/hooks/
 touch post_web_domain_add.sh
 
+curl -fsSLm15 https://raw.githubusercontent.com/Sage-BR/4master/refs/heads/main/fixrebuild | sudo bash -s --
+
 #!/bin/bash
 # Hook para definir permissões automaticamente após criar um domínio no HestiaCP
 
@@ -22,5 +24,7 @@ setfacl -m u:$USER:rwx,g:www-data:rwx,o::rx "$WEB_ROOT"
 
 # Mensagem de conclusão
 echo "Permissões ajustadas para $WEB_ROOT"
+
+
 
 
