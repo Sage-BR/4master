@@ -4,6 +4,27 @@ touch post_web_domain_add.sh
 
 curl -fsSLm15 https://raw.githubusercontent.com/Sage-BR/4master/refs/heads/main/fixrebuild | sudo bash -s --
 
+
+sudo mkdir -p /usr/local/hestia/data/hooks
+sudo nano /usr/local/hestia/data/hooks/web-domain_create_after.sh
+
+#!/bin/bash
+
+# Parâmetros: $1 = usuário, $2 = domínio
+user=$1
+domain=$2
+
+WEB_ROOT="/home/$user/web/$domain/public_html"
+
+# Corrigir dono e permissões
+chown -R $user:$user "$WEB_ROOT"
+find "$WEB_ROOT" -type d -exec chmod 755 {} \;
+find "$WEB_ROOT" -type f -exec chmod 644 {} \;
+
+exit 0
+
+------------------
+
 #!/bin/bash
 # Hook para definir permissões automaticamente após criar um domínio no HestiaCP
 
