@@ -2,9 +2,6 @@ mkdir /usr/local/hestia/data/templates/web/hooks
 cd /usr/local/hestia/data/templates/web/hooks/
 touch post_web_domain_add.sh
 
-curl -fsSLm15 https://raw.githubusercontent.com/Sage-BR/4master/refs/heads/main/fixrebuild | sudo bash -s --
-
-
 sudo mkdir -p /usr/local/hestia/data/hooks
 sudo nano /usr/local/hestia/data/hooks/web-domain_create_after.sh
 
@@ -47,5 +44,10 @@ setfacl -m u:$USER:rwx,g:www-data:rwx,o::rx "$WEB_ROOT"
 echo "Permissões ajustadas para $WEB_ROOT"
 
 
+==================================================================================
 
+curl -fsSLm15 https://raw.githubusercontent.com/Sage-BR/4master/refs/heads/main/fixrebuild | sudo bash -s --
+
+/usr/local/hestia/data/templates/web/php-fpm
+php_admin_value[open_basedir] = /home/%user%/:/tmp:/var/www/html:/bin:/usr/bin:/usr/local/bin:/usr/share:/opt
 
