@@ -1,11 +1,23 @@
-#! /bin/sh
-# Fazendo Backup dos logs atuais
-tar -zcvf /backup/var/log-`date +%d.%m.%y-%H:%M`.tar.gz /var/log
-# Acessando o diretório de logs
-cd /var/log
-# Procura todos os arquivos no /var/log e executa a limpeza
-for l in `find . -type f -exec ls {} \;`; do
-        echo -n >$l &>/dev/null
-done
-# Remove arquivos de backup de logs com mais de 3 dias de criação
-find /backup/var/ -name "*.tar.gz" -ctime +3 -exec rm -rf {} \;
+#!/bin/sh
+
+BACKUP_DIR="/backup/var"
+LOG_DIR="/var/log"
+DATA=$(date +%d.%m.%y-%H:%M)
+
+# Criar diretório se não existir
+mkdir -p "$BACKUP_DIR"
+
+# Backup dos logs
+tar -zcvf "$BACKUP_DIR/log-$DATA.tar.gz" "$LOG_DIR"
+
+# Limpeza dos logs
+find "$LOG_DIR" -type f -exec truncate -s 0 {} \;
+
+# Remover backups antigos (+3 dias)
+find "$BACKUP_DIR" -name "*.tar.gz" -ctime +3 -exec rm -f {} \;
+
+# Limpeza de cache do APT
+rm -rf /var/cache/apt/archives/*
+rm -rf /var/lib/apt/lists/*
+
+journalctl --vacuum-time=3d
