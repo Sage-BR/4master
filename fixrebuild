@@ -2,11 +2,11 @@
 #shellcheck disable=SC2013,SC2016
 
 # Functions
-function _echoerr() {
+_echoerr() {
     echo "Error: $*" >&2
 }
 
-function _checkcommands() {
+_checkcommands() {
     for cmd in "$@"; do
         if ! command -v "$cmd" &>/dev/null; then
             _echoerr "Missing command: $cmd"
@@ -15,7 +15,7 @@ function _checkcommands() {
     done
 }
 
-function _iamroot() {
+_iamroot() {
     if [[ $EUID -ne 0 ]]; then
         _echoerr "You must run as root."
         exit 2
@@ -50,41 +50,44 @@ rebuild_mail_domains=0
 
 echo "${YELLOW}Fixing Nginx templates (web and mail) to avoid error 421 after updating Apache2 to version 2.4.64${NORMAL}"
 echo
-#Checking Nginx web templates
-for file in $(grep -l proxy_pass "$HESTIA"/data/templates/web/nginx/*.stpl 2>/dev/null); do
+
+# Checking Nginx web templates
+grep -l proxy_pass "$HESTIA"/data/templates/web/nginx/*.stpl 2>/dev/null | while read -r file; do
     if ! grep -q proxy_ssl_server_name "$file"; then
         rebuild_web_domains=1
         echo "Fixing template ${BLUE}$file${NORMAL}"
-        sed -i.421 '/proxy_pass/ i\\t\tproxy_ssl_server_name on;\n\t\tproxy_ssl_name $host;' "$file"
+        sed -i '/proxy_pass/ i\\t\tproxy_ssl_server_name on;\n\t\tproxy_ssl_name $host;' "$file"
     fi
 done
 
-#Checking Nginx mail templates
-for file in $(grep -l proxy_pass "$HESTIA"/data/templates/mail/nginx/*.stpl 2>/dev/null); do
+# Checking Nginx mail templates
+grep -l proxy_pass "$HESTIA"/data/templates/mail/nginx/*.stpl 2>/dev/null | while read -r file; do
     if ! grep -q proxy_ssl_server_name "$file"; then
         rebuild_mail_domains=1
         echo "Fixing template ${BLUE}$file${NORMAL}"
-        sed -i.421 '/proxy_pass/ i\\t\tproxy_ssl_server_name on;\n\t\tproxy_ssl_name $host;' "$file"
+        sed -i '/proxy_pass/ i\\t\tproxy_ssl_server_name on;\n\t\tproxy_ssl_name $host;' "$file"
     fi
 done
 
 echo
 
+# Rebuilding web domains if necessary
 if [[ ${rebuild_web_domains} -eq 1 ]]; then
     echo "${GREEN}Rebuilding Web domains:${NORMAL}"
-    for i in $("$BIN/v-list-users" plain | cut -f1); do
-        echo "Rebuilding web domains for user ${BLUE}$i${NORMAL}"
-        "$BIN/v-rebuild-web-domains" "$i" yes >/dev/null
+    "$BIN/v-list-users" plain | cut -f1 | while read -r user; do
+        echo "Rebuilding web domains for user ${BLUE}$user${NORMAL}"
+        "$BIN/v-rebuild-web-domains" "$user" yes >/dev/null
     done
 else
     echo "${GREEN}There is no need to rebuild web domains${NORMAL}"
 fi
 
+# Rebuilding mail domains if necessary
 if [[ ${rebuild_mail_domains} -eq 1 ]]; then
     echo "${GREEN}Rebuilding Mail domains:${NORMAL}"
-    for i in $("$BIN/v-list-users" plain | cut -f1); do
-        echo "Rebuilding mail domains for user ${BLUE}$i${NORMAL}"
-        "$BIN/v-rebuild-mail-domains" "$i" >/dev/null
+    "$BIN/v-list-users" plain | cut -f1 | while read -r user; do
+        echo "Rebuilding mail domains for user ${BLUE}$user${NORMAL}"
+        "$BIN/v-rebuild-mail-domains" "$user" >/dev/null
     done
 else
     echo "${GREEN}There is no need to rebuild mail domains${NORMAL}"
@@ -92,7 +95,8 @@ fi
 
 echo
 
-if [[ ${rebuild_web_domains} -eq 1 ]] || [[ $rebuild_mail_domains -eq 1 ]]; then
+# Restart Nginx if needed
+if [[ ${rebuild_web_domains} -eq 1 ]] || [[ ${rebuild_mail_domains} -eq 1 ]]; then
     if nginx -t &>/dev/null; then
         echo "${BLUE}Restarting Nginx${NORMAL}"
         if systemctl restart nginx &>/dev/null; then
