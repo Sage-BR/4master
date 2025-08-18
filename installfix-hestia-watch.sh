@@ -7,6 +7,8 @@ SCRIPT_PATH="/usr/local/bin/fix-hestia-watch.sh"
 SERVICE_PATH="/etc/systemd/system/fix-hestia-watch.service"
 
 echo "=== Instalando fix-hestia-watch ==="
+apt update
+apt install inotify-tools -y
 
 # 1. Baixar o script
 echo "[1/5] Baixando script..."
