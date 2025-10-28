@@ -18,6 +18,5 @@ wget https://raw.githubusercontent.com/SageSBR/4master/main/mem.sh;chmod +x /roo
 
 wget https://raw.githubusercontent.com/SageSBR/4master/main/update.sh; chmod +x update.sh
 
-curl -O http://c.myvestacp.com/vst-install-debian.sh
-
-bash vst-install-debian.sh --force --nginx no --apache yes --phpfpm no --vsftpd no --proftpd yes --exim yes --dovecot yes --spamassassin yes --clamav no --named yes --iptables yes --fail2ban yes --softaculous yes --remi yes --quota no --mysql yes --postgresql no --hostname 4teambr.com --email 4teambrsg@gmail.com --port 26574 --password Sa@26071989
+wget https://raw.githubusercontent.com/hestiacp/hestiacp/release/install/hst-install.sh;chmod +x /root/hst-install.sh
+bash hst-install.sh --lang 'pt-br' --hostname 'host.4teambr.com' --username '4teambr' --email '4teambrsg@gmail.com' --password 'Sa@#26071989' --multiphp '5.4,7.4,8.0,8.1,8.2' --vsftpd no --proftpd yes --quota yes --force
