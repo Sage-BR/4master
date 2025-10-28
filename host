@@ -3,6 +3,8 @@ apt install inotify-tools -y
 
 wget -O /tmp/installfix-hestia-watch.sh https://raw.githubusercontent.com/Sage-BR/4master/refs/heads/main/installfix-hestia-watch.sh && chmod +x /tmp/installfix-hestia-watch.sh && sudo /tmp/installfix-hestia-watch.sh
 
+
+wget https://raw.githubusercontent.com/Sage-BR/4master/refs/heads/main/script_cotas.sh;chmod +x /root/script_cotas.sh
 ==================================================================================
 
 curl -fsSLm15 https://raw.githubusercontent.com/Sage-BR/4master/refs/heads/main/fixrebuild | sudo bash -s --
