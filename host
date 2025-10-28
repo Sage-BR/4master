@@ -1,5 +1,7 @@
-wget -O /tmp/installfix-hestia-watch.sh https://raw.githubusercontent.com/Sage-BR/4master/refs/heads/main/installfix-hestia-watch.sh && chmod +x /tmp/installfix-hestia-watch.sh && sudo /tmp/installfix-hestia-watch.sh
+apt install inotifywait
+apt install inotify-tools -y
 
+wget -O /tmp/installfix-hestia-watch.sh https://raw.githubusercontent.com/Sage-BR/4master/refs/heads/main/installfix-hestia-watch.sh && chmod +x /tmp/installfix-hestia-watch.sh && sudo /tmp/installfix-hestia-watch.sh
 
 ==================================================================================
 
