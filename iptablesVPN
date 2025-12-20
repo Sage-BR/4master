@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# rc.local - Proteções de rede avançadas + VPN
+# rc.local - Proteções de rede avançadas + VPN + Anti-DDoS Automático
 #
 
 ### 🔒 Políticas Padrão
@@ -28,6 +28,25 @@
 ### --- Chain personalizada para bloqueios extras ---
 /sbin/iptables -N BLOCKLIST 2>/dev/null || true
 
+### 🛡️ === ANTI-DDOS AUTOMÁTICO ===
+# Cria chain para tracking de conexões abusivas
+/sbin/iptables -N DDOS_CHECK 2>/dev/null || true
+/sbin/iptables -F DDOS_CHECK
+
+# Bloqueia IPs que já estão na lista de banidos (600 segundos = 10 minutos)
+/sbin/iptables -A DDOS_CHECK -m recent --name DDOS_BAN --rcheck --seconds 600 -j DROP
+
+# Detecta flood de conexões: mais de 10 conexões em 10 segundos
+/sbin/iptables -A DDOS_CHECK -m recent --name DDOS_TRACK --update --seconds 10 --hitcount 10 -j SET --add-set DDOS_BAN src
+/sbin/iptables -A DDOS_CHECK -m recent --name DDOS_TRACK --update --seconds 10 --hitcount 10 -m recent --name DDOS_BAN --set -j DROP
+
+# Adiciona IP ao tracking
+/sbin/iptables -A DDOS_CHECK -m recent --name DDOS_TRACK --set
+
+# Aplica verificação anti-DDoS em TODAS as conexões TCP do VPS
+/sbin/iptables -I INPUT -p tcp -j DDOS_CHECK
+/sbin/iptables -I FORWARD -p tcp -j DDOS_CHECK
+
 ### ❌ Bloquear Pacotes Inválidos
 /sbin/iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
 /sbin/iptables -A FORWARD -m conntrack --ctstate INVALID -j DROP
@@ -37,8 +56,8 @@
 /sbin/iptables -A INPUT -i eth0 -p tcp --syn -j DROP
 
 ### 🔐 Proteção contra brute-force SSH (porta 35556)
-/sbin/iptables -A INPUT -p tcp --dport 35556 -m conntrack --ctstate NEW -m recent --set
-/sbin/iptables -A INPUT -p tcp --dport 35556 -m conntrack --ctstate NEW -m recent --update --seconds 60 --hitcount 10 -j DROP
+/sbin/iptables -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW -m recent --set
+/sbin/iptables -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW -m recent --update --seconds 60 --hitcount 10 -j DROP
 
 ### 🔍 Proteção contra Scan de Portas
 /sbin/iptables -N PORTSCAN 2>/dev/null || true
@@ -50,6 +69,15 @@
 
 ### 📉 Limitar Conexões Simultâneas por IP
 /sbin/iptables -A INPUT -p tcp -m connlimit --connlimit-above 111 -j REJECT --reject-with tcp-reset
+
+### 🎮 Proteção Extra para Portas Lineage (2106, 7777)
+# Limita 5 conexões simultâneas por IP em cada porta do jogo
+/sbin/iptables -A INPUT -p tcp --dport 2106 -m connlimit --connlimit-above 5 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
+/sbin/iptables -A INPUT -p tcp --dport 7777 -m connlimit --connlimit-above 5 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
+
+# Rate limit para novas conexões nas portas do Lineage
+/sbin/iptables -A INPUT -p tcp --dport 2106 -m conntrack --ctstate NEW -m limit --limit 3/s --limit-burst 5 -j ACCEPT
+/sbin/iptables -A INPUT -p tcp --dport 7777 -m conntrack --ctstate NEW -m limit --limit 3/s --limit-burst 5 -j ACCEPT
 
 ### ⛔️ Limitar Novas Conexões TCP
 /sbin/iptables -A INPUT -p tcp -m conntrack --ctstate NEW -m limit --limit 60/s --limit-burst 20 -j ACCEPT
@@ -65,8 +93,8 @@
 /sbin/iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
 
 ### 🌐 Permitir Portas do Servidor (TCP/UDP)
-/sbin/iptables -A INPUT -p tcp -m multiport --dports 30000,7777,2106,9014,3000,445 -m conntrack --ctstate NEW -j ACCEPT
-/sbin/iptables -A INPUT -p udp -m multiport --dports 30000,7777,2106,9014,445 -m conntrack --ctstate NEW -j ACCEPT
+/sbin/iptables -A INPUT -p tcp -m multiport --dports 3306,7777,2106,9014,2000,445 -m conntrack --ctstate NEW -j ACCEPT
+/sbin/iptables -A INPUT -p udp -m multiport --dports 3306,7777,2106,9014,445 -m conntrack --ctstate NEW -j ACCEPT
 
 ### 🔀 Forwarding da VPN
 /sbin/iptables -A FORWARD -i wg0 -o eth0 -s 10.66.66.0/24 -j ACCEPT
@@ -76,21 +104,21 @@
 /sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 7777 -j DNAT --to-destination 10.66.66.2:7777
 /sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 2106 -j DNAT --to-destination 10.66.66.2:2106
 /sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 9014 -j DNAT --to-destination 10.66.66.2:9014
-/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 3000 -j DNAT --to-destination 10.66.66.2:3000
+/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 2000 -j DNAT --to-destination 10.66.66.2:2000
 /sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 445 -j DNAT --to-destination 10.66.66.2:445
 
 ### 🔄 Forward Rules
 # De fora para o cliente
-/sbin/iptables -A FORWARD -i eth0 -o wg0 -d 10.66.66.2 -p tcp -m multiport --dports 445,53,9014,3306,2106,7777 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+/sbin/iptables -A FORWARD -i eth0 -o wg0 -d 10.66.66.2 -p tcp -m multiport --dports 2000,445,53,9014,3306,2106,7777 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
 # Do cliente para fora
-/sbin/iptables -A FORWARD -i wg0 -o eth0 -s 10.66.66.2 -p tcp -m multiport --sports 3000,445,53,9014,3306,2106,7777 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+/sbin/iptables -A FORWARD -i wg0 -o eth0 -s 10.66.66.2 -p tcp -m multiport --sports 2000,445,53,9014,3306,2106,7777 -m conntrack --ctstate ESTABLISHED -j ACCEPT
 
 ### 🔐 SYNPROXY (exceto porta 445)
 /sbin/iptables -A FORWARD -i eth0 -p tcp -m multiport --dports 3000,53,9014,3306,2106,7777 -m state --state INVALID,UNTRACKED -j SYNPROXY --sack-perm --timestamp --wscale 7 --mss 1460
 /sbin/iptables -A FORWARD -i eth0 -p tcp -m multiport --dports 3000,53,9014,3306,2106,7777 -m state --state INVALID -j DROP
 
 ### 🌍 Permitir saída (OUTPUT)
-/sbin/iptables -A OUTPUT -p tcp -m multiport --dports 30000,445,35556,53,9014,3306,2106,7777 -j ACCEPT
+/sbin/iptables -A OUTPUT -p tcp -m multiport --dports 2000,445,22,53,9014,3306,2106,7777 -j ACCEPT
 
 ### 🚫 Rejeitar tudo não permitido
 /sbin/iptables -A INPUT -j REJECT --reject-with icmp-port-unreachable
