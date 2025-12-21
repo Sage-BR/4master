@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# rc.local - Proteções de rede avançadas + VPN + Anti-DDoS Automático
+# rc.local - Proteções de rede avançadas + VPN + Anti-DDoS Automático (VPS INTEIRO)
 #
 
 ### 🔒 Políticas Padrão
@@ -24,67 +24,76 @@
 /sbin/iptables -A INPUT -s 224.0.0.0/4 -j DROP
 /sbin/iptables -A INPUT -s 240.0.0.0/5 -j DROP
 /sbin/iptables -A INPUT -s 169.254.0.0/16 -j DROP
+/sbin/iptables -A INPUT -s 0.0.0.0/8 -j DROP
+/sbin/iptables -A INPUT -s 255.255.255.255 -j DROP
 
 ### --- Chain personalizada para bloqueios extras ---
 /sbin/iptables -N BLOCKLIST 2>/dev/null || true
+/sbin/iptables -F BLOCKLIST
 
-### 🛡️ === ANTI-DDOS AUTOMÁTICO ===
+### 🛡️ === PROTEÇÃO GLOBAL ANTI-DDOS (TODO O VPS) ===
 # Cria chain para tracking de conexões abusivas
-/sbin/iptables -N DDOS_CHECK 2>/dev/null || true
-/sbin/iptables -F DDOS_CHECK
+/sbin/iptables -N GLOBAL_PROTECT 2>/dev/null || true
+/sbin/iptables -F GLOBAL_PROTECT
 
-# Bloqueia IPs que já estão na lista de banidos (600 segundos = 10 minutos)
-/sbin/iptables -A DDOS_CHECK -m recent --name DDOS_BAN --rcheck --seconds 600 -j DROP
+# Bloqueia IPs banidos por 30 minutos
+/sbin/iptables -A GLOBAL_PROTECT -m recent --name GLOBAL_BAN --rcheck --seconds 1800 -j DROP
 
-# Detecta flood de conexões: mais de 10 conexões em 10 segundos
-/sbin/iptables -A DDOS_CHECK -m recent --name DDOS_TRACK --update --seconds 10 --hitcount 10 -j SET --add-set DDOS_BAN src
-/sbin/iptables -A DDOS_CHECK -m recent --name DDOS_TRACK --update --seconds 10 --hitcount 10 -m recent --name DDOS_BAN --set -j DROP
+# Detecta flood agressivo: mais de 8 conexões em 5 segundos
+/sbin/iptables -A GLOBAL_PROTECT -m recent --name GLOBAL_FLOOD --update --seconds 5 --hitcount 8 -m recent --name GLOBAL_BAN --set -j DROP
+/sbin/iptables -A GLOBAL_PROTECT -m recent --name GLOBAL_FLOOD --set
 
-# Adiciona IP ao tracking
-/sbin/iptables -A DDOS_CHECK -m recent --name DDOS_TRACK --set
+# Detecta tentativas com pacotes inválidos repetidos
+/sbin/iptables -A GLOBAL_PROTECT -m recent --name GLOBAL_INVALID --update --seconds 10 --hitcount 5 -m recent --name GLOBAL_BAN --set -j DROP
 
-# Aplica verificação anti-DDoS em TODAS as conexões TCP do VPS
-/sbin/iptables -I INPUT -p tcp -j DDOS_CHECK
-/sbin/iptables -I FORWARD -p tcp -j DDOS_CHECK
+# Limita conexões simultâneas por IP (máximo 30 conexões)
+/sbin/iptables -A GLOBAL_PROTECT -m connlimit --connlimit-above 30 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
 
-### ❌ Bloquear Pacotes Inválidos
-/sbin/iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
-/sbin/iptables -A FORWARD -m conntrack --ctstate INVALID -j DROP
+# Rate limit para novas conexões (2 por segundo, burst de 5)
+/sbin/iptables -A GLOBAL_PROTECT -m conntrack --ctstate NEW -m limit --limit 2/s --limit-burst 5 -j ACCEPT
+/sbin/iptables -A GLOBAL_PROTECT -m conntrack --ctstate NEW -j DROP
 
-### 🔐 Proteção contra SYN Flood
-/sbin/iptables -A INPUT -i eth0 -p tcp --syn -m limit --limit 1/s --limit-burst 3 -j ACCEPT
-/sbin/iptables -A INPUT -i eth0 -p tcp --syn -j DROP
+### ❌ Bloquear Pacotes Inválidos GLOBALMENTE
+/sbin/iptables -A INPUT -m conntrack --ctstate INVALID -m recent --name GLOBAL_INVALID --set -j DROP
+/sbin/iptables -A FORWARD -m conntrack --ctstate INVALID -m recent --name GLOBAL_INVALID --set -j DROP
 
-### 🔐 Proteção contra brute-force SSH (porta 35556)
-/sbin/iptables -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW -m recent --set
-/sbin/iptables -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW -m recent --update --seconds 60 --hitcount 10 -j DROP
-
-### 🔍 Proteção contra Scan de Portas
-/sbin/iptables -N PORTSCAN 2>/dev/null || true
-/sbin/iptables -A PORTSCAN -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit 1/s --limit-burst 2 -j RETURN
-/sbin/iptables -A PORTSCAN -j DROP
-/sbin/iptables -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
-/sbin/iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
+### 🚫 Bloquear FLAGS TCP Suspeitas (TODO O VPS)
+# Pacote NULL
 /sbin/iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+# XMAS packet
+/sbin/iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
+# SYN+FIN
+/sbin/iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+# SYN+RST
+/sbin/iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+# FIN+RST
+/sbin/iptables -A INPUT -p tcp --tcp-flags FIN,RST FIN,RST -j DROP
+# FIN sem ACK
+/sbin/iptables -A INPUT -p tcp --tcp-flags FIN,ACK FIN -j DROP
+# PSH sem ACK
+/sbin/iptables -A INPUT -p tcp --tcp-flags ACK,PSH PSH -j DROP
+# URG sem ACK
+/sbin/iptables -A INPUT -p tcp --tcp-flags ACK,URG URG -j DROP
 
-### 📉 Limitar Conexões Simultâneas por IP
-/sbin/iptables -A INPUT -p tcp -m connlimit --connlimit-above 111 -j REJECT --reject-with tcp-reset
+### 🔐 Proteção contra SYN Flood GLOBAL
+/sbin/iptables -A INPUT -p tcp --syn -m limit --limit 2/s --limit-burst 4 -j ACCEPT
+/sbin/iptables -A INPUT -p tcp --syn -j DROP
 
-### 🎮 Proteção Extra para Portas Lineage (2106, 7777)
-# Limita 5 conexões simultâneas por IP em cada porta do jogo
-/sbin/iptables -A INPUT -p tcp --dport 2106 -m connlimit --connlimit-above 5 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
-/sbin/iptables -A INPUT -p tcp --dport 7777 -m connlimit --connlimit-above 5 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
+### 🔐 Proteção contra Port Scan GLOBAL
+/sbin/iptables -N PORTSCAN 2>/dev/null || true
+/sbin/iptables -F PORTSCAN
+/sbin/iptables -A PORTSCAN -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit 1/s --limit-burst 2 -j RETURN
+/sbin/iptables -A PORTSCAN -m recent --name PORTSCAN --set -j DROP
+/sbin/iptables -A INPUT -p tcp --tcp-flags SYN,ACK,FIN,RST RST -j PORTSCAN
 
-# Rate limit para novas conexões nas portas do Lineage
-/sbin/iptables -A INPUT -p tcp --dport 2106 -m conntrack --ctstate NEW -m limit --limit 3/s --limit-burst 5 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp --dport 7777 -m conntrack --ctstate NEW -m limit --limit 3/s --limit-burst 5 -j ACCEPT
+### 🔐 Proteção contra brute-force SSH
+/sbin/iptables -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW -m recent --set
+/sbin/iptables -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW -m recent --update --seconds 60 --hitcount 5 -j DROP
 
-### ⛔️ Limitar Novas Conexões TCP
-/sbin/iptables -A INPUT -p tcp -m conntrack --ctstate NEW -m limit --limit 60/s --limit-burst 20 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp -m conntrack --ctstate NEW -j DROP
-
-### 📡 Limitar ICMP (Ping)
-/sbin/iptables -I INPUT -p icmp -m hashlimit --hashlimit-name icmp --hashlimit-mode srcip --hashlimit 3/second --hashlimit-burst 5 -j ACCEPT
+### 📡 Limitar ICMP (Ping) GLOBALMENTE
+/sbin/iptables -A INPUT -p icmp --icmp-type echo-request -m limit --limit 1/s --limit-burst 3 -j ACCEPT
+/sbin/iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
+/sbin/iptables -A INPUT -p icmp -j ACCEPT
 
 ### 🌐 Permitir DNS (TCP e UDP)
 /sbin/iptables -A INPUT -p udp --sport 53 -j ACCEPT
@@ -92,9 +101,20 @@
 /sbin/iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
 /sbin/iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
 
-### 🌐 Permitir Portas do Servidor (TCP/UDP)
-/sbin/iptables -A INPUT -p tcp -m multiport --dports 3306,7777,2106,9014,2000,445 -m conntrack --ctstate NEW -j ACCEPT
-/sbin/iptables -A INPUT -p udp -m multiport --dports 3306,7777,2106,9014,445 -m conntrack --ctstate NEW -j ACCEPT
+### 🌐 Aplicar PROTEÇÃO GLOBAL em TODAS as portas TCP
+/sbin/iptables -A INPUT -i eth0 -p tcp -j GLOBAL_PROTECT
+/sbin/iptables -A FORWARD -i eth0 -p tcp -j GLOBAL_PROTECT
+
+### 🎮 Proteção EXTRA específica para Lineage (em cima da proteção global)
+# Limita ainda mais as portas do jogo: 2 conexões simultâneas por IP
+/sbin/iptables -A INPUT -p tcp --dport 2106 -m connlimit --connlimit-above 2 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
+/sbin/iptables -A INPUT -p tcp --dport 7777 -m connlimit --connlimit-above 2 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
+/sbin/iptables -A FORWARD -p tcp --dport 2106 -m connlimit --connlimit-above 2 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
+/sbin/iptables -A FORWARD -p tcp --dport 7777 -m connlimit --connlimit-above 2 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
+
+### 🌐 Permitir Portas do Servidor (TCP/UDP) - após proteções
+/sbin/iptables -A INPUT -p tcp -m multiport --dports 3306,7777,2106,9014,2000,445 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+/sbin/iptables -A INPUT -p udp -m multiport --dports 3306,7777,2106,9014,445 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
 
 ### 🔀 Forwarding da VPN
 /sbin/iptables -A FORWARD -i wg0 -o eth0 -s 10.66.66.0/24 -j ACCEPT
@@ -107,21 +127,34 @@
 /sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 2000 -j DNAT --to-destination 10.66.66.2:2000
 /sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 445 -j DNAT --to-destination 10.66.66.2:445
 
-### 🔄 Forward Rules
+### 🔄 Forward Rules (com proteção global já aplicada)
 # De fora para o cliente
 /sbin/iptables -A FORWARD -i eth0 -o wg0 -d 10.66.66.2 -p tcp -m multiport --dports 2000,445,53,9014,3306,2106,7777 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
 # Do cliente para fora
 /sbin/iptables -A FORWARD -i wg0 -o eth0 -s 10.66.66.2 -p tcp -m multiport --sports 2000,445,53,9014,3306,2106,7777 -m conntrack --ctstate ESTABLISHED -j ACCEPT
 
-### 🔐 SYNPROXY (exceto porta 445)
-/sbin/iptables -A FORWARD -i eth0 -p tcp -m multiport --dports 3000,53,9014,3306,2106,7777 -m state --state INVALID,UNTRACKED -j SYNPROXY --sack-perm --timestamp --wscale 7 --mss 1460
-/sbin/iptables -A FORWARD -i eth0 -p tcp -m multiport --dports 3000,53,9014,3306,2106,7777 -m state --state INVALID -j DROP
+### 🔐 SYNPROXY GLOBAL (exceto porta 445 e VPN)
+/sbin/iptables -A FORWARD -i eth0 -p tcp ! --dport 445 -m state --state INVALID,UNTRACKED -j SYNPROXY --sack-perm --timestamp --wscale 7 --mss 1460
+/sbin/iptables -A FORWARD -i eth0 -p tcp ! --dport 445 -m state --state INVALID -j DROP
 
 ### 🌍 Permitir saída (OUTPUT)
-/sbin/iptables -A OUTPUT -p tcp -m multiport --dports 2000,445,22,53,9014,3306,2106,7777 -j ACCEPT
+/sbin/iptables -A OUTPUT -p tcp -j ACCEPT
+/sbin/iptables -A OUTPUT -p udp -j ACCEPT
+
+### 📊 Logging de ataques bloqueados
+/sbin/iptables -N LOGDROP 2>/dev/null || true
+/sbin/iptables -F LOGDROP
+/sbin/iptables -A LOGDROP -m limit --limit 5/min -j LOG --log-prefix "IPTABLES-BLOCKED: " --log-level 4
+/sbin/iptables -A LOGDROP -j DROP
+
+### 🚫 Aplicar BLOCKLIST antes de rejeitar
+/sbin/iptables -I INPUT 1 -j BLOCKLIST
+/sbin/iptables -I FORWARD 1 -j BLOCKLIST
 
 ### 🚫 Rejeitar tudo não permitido
-/sbin/iptables -A INPUT -j REJECT --reject-with icmp-port-unreachable
-/sbin/iptables -A FORWARD -j REJECT --reject-with icmp-port-unreachable
+/sbin/iptables -A INPUT -j LOGDROP
+/sbin/iptables -A FORWARD -j LOGDROP
+
+echo "Firewall carregado com proteção GLOBAL em todo o VPS"
 
 exit 0
