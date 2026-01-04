@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# rc.local - Firewall com SSH SEMPRE ACESSÍVEL (Anti-Lockout)
+# rc.local - Firewall Profissional com Proteção DDoS Balanceada
 #
 
 ### 🔒 Políticas Padrão
@@ -8,56 +8,50 @@
 /sbin/iptables -P FORWARD DROP
 /sbin/iptables -P OUTPUT ACCEPT
 
-### 🧹 Limpar tudo
-/sbin/iptables -F
+### 🧹 Limpar chains (NAT gerenciado pelo WireGuard)
+/sbin/iptables -F INPUT
+/sbin/iptables -F FORWARD
+/sbin/iptables -F OUTPUT
 /sbin/iptables -X
-/sbin/iptables -t nat -F
 
 ### 🔧 Criar chains personalizadas
 /sbin/iptables -N BLOCKLIST 2>/dev/null || true
-/sbin/iptables -N GLOBAL_PROTECT 2>/dev/null || true
+/sbin/iptables -N SSH_PROTECT 2>/dev/null || true
+/sbin/iptables -N L2_PROTECT 2>/dev/null || true
+/sbin/iptables -N WEB_PROTECT 2>/dev/null || true
 /sbin/iptables -N PORTSCAN 2>/dev/null || true
 /sbin/iptables -N LOGDROP 2>/dev/null || true
 
 ### ==========================================
-### 🔴 CAMADA 0: SSH SEMPRE LIBERADO (ANTI-LOCKOUT)
-### ==========================================
-### PRIMEIRA REGRA = SSH NUNCA BLOQUEIA
-/sbin/iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-/sbin/iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
-
-### ==========================================
-### CAMADA 1: TRÁFEGO CONFIÁVEL
+### CAMADA 1: TRÁFEGO CONFIÁVEL (BYPASS TOTAL)
 ### ==========================================
 
-### 🟢 Loopback
+### 🟢 Loopback (sem limitações)
 /sbin/iptables -A INPUT -i lo -j ACCEPT
 /sbin/iptables -A OUTPUT -o lo -j ACCEPT
 
-### 🔐 VPN WireGuard (tráfego confiável)
+### 🔐 VPN WireGuard (totalmente confiável)
 /sbin/iptables -A INPUT -i wg0 -j ACCEPT
 /sbin/iptables -A OUTPUT -o wg0 -j ACCEPT
-/sbin/iptables -A FORWARD -i wg0 -j ACCEPT
-/sbin/iptables -A FORWARD -o wg0 -j ACCEPT
 
-### 🔄 Conexões estabelecidas (maior volume)
+### 🔄 Conexões estabelecidas (maior volume, sem limitações)
 /sbin/iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 /sbin/iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 /sbin/iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 
 ### ==========================================
-### CAMADA 2: BLOQUEIOS CRÍTICOS
+### CAMADA 2: BLOQUEIOS CRÍTICOS (MALWARE/SPOOFING)
 ### ==========================================
 
-### 🚫 BLOCKLIST
+### 🚫 BLOCKLIST (IPs banidos manualmente)
 /sbin/iptables -A INPUT -j BLOCKLIST
 /sbin/iptables -A FORWARD -j BLOCKLIST
 
-### ❌ Pacotes Inválidos
+### ❌ Pacotes Inválidos (malformados)
 /sbin/iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
 /sbin/iptables -A FORWARD -m conntrack --ctstate INVALID -j DROP
 
-### 🚫 Anti-spoofing
+### 🚫 Anti-spoofing (IPs impossíveis)
 /sbin/iptables -A INPUT -s 127.0.0.0/8 ! -i lo -j DROP
 /sbin/iptables -A INPUT -s 224.0.0.0/4 -j DROP
 /sbin/iptables -A INPUT -s 240.0.0.0/5 -j DROP
@@ -65,7 +59,7 @@
 /sbin/iptables -A INPUT -s 0.0.0.0/8 -j DROP
 /sbin/iptables -A INPUT -s 255.255.255.255 -j DROP
 
-### 🚫 FLAGS TCP Maliciosas
+### 🚫 FLAGS TCP Maliciosas (ataques conhecidos)
 /sbin/iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
 /sbin/iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
 /sbin/iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
@@ -76,38 +70,57 @@
 /sbin/iptables -A INPUT -p tcp --tcp-flags ACK,URG URG -j DROP
 
 ### ==========================================
-### CAMADA 3: PROTEÇÃO GLOBAL (SEM SSH)
+### CAMADA 3: PROTEÇÕES CUSTOMIZADAS POR SERVIÇO
 ### ==========================================
 
-### 🛡️ Configurar GLOBAL_PROTECT
-# IPs banidos temporariamente (30 min)
-/sbin/iptables -A GLOBAL_PROTECT -m recent --name GLOBAL_BAN --rcheck --seconds 1800 -j DROP
+### 🔐 SSH_PROTECT - Proteção moderada (brute-force)
+# Ban após 6 tentativas em 2 minutos
+/sbin/iptables -A SSH_PROTECT -m recent --name SSH_ATTACK --rcheck --seconds 120 --hitcount 6 -j DROP
+/sbin/iptables -A SSH_PROTECT -m recent --name SSH_ATTACK --set
+# Limite de 3 conexões simultâneas por IP
+/sbin/iptables -A SSH_PROTECT -m connlimit --connlimit-above 3 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
+/sbin/iptables -A SSH_PROTECT -j ACCEPT
 
-# Flood agressivo (10 conexões em 10s - mais tolerante)
-/sbin/iptables -A GLOBAL_PROTECT -m recent --name GLOBAL_FLOOD --update --seconds 10 --hitcount 10 -j DROP
-/sbin/iptables -A GLOBAL_PROTECT -m recent --name GLOBAL_FLOOD --set
+### 🎮 L2_PROTECT - Proteção balanceada (permite reconexões)
+# Ban temporário apenas em caso extremo (30 tentativas em 60s)
+/sbin/iptables -A L2_PROTECT -m recent --name L2_EXTREME --rcheck --seconds 60 --hitcount 30 -j DROP
+/sbin/iptables -A L2_PROTECT -m recent --name L2_EXTREME --set
 
-# Limite de conexões simultâneas (50 por IP - mais permissivo)
-/sbin/iptables -A GLOBAL_PROTECT -m connlimit --connlimit-above 50 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
+# Limite de 8 conexões simultâneas por IP (permite dual-box)
+/sbin/iptables -A L2_PROTECT -m connlimit --connlimit-above 8 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
 
-# Rate limit para novas conexões (5/s, burst 10 - mais generoso)
-/sbin/iptables -A GLOBAL_PROTECT -m conntrack --ctstate NEW -m limit --limit 5/s --limit-burst 10 -j RETURN
-/sbin/iptables -A GLOBAL_PROTECT -m conntrack --ctstate NEW -j DROP
+# Rate limit generoso: 15 novas conexões/segundo, burst 30
+/sbin/iptables -A L2_PROTECT -m conntrack --ctstate NEW -m limit --limit 15/s --limit-burst 30 -j ACCEPT
+/sbin/iptables -A L2_PROTECT -m conntrack --ctstate NEW -j DROP
 
-### 🔐 Configurar PORTSCAN
+### 🌐 WEB_PROTECT - Proteção padrão web (MySQL, SMB, etc)
+# Ban em caso de flood severo (50 conexões em 30s)
+/sbin/iptables -A WEB_PROTECT -m recent --name WEB_FLOOD --rcheck --seconds 30 --hitcount 50 -j DROP
+/sbin/iptables -A WEB_PROTECT -m recent --name WEB_FLOOD --set
+
+# Limite de 30 conexões simultâneas por IP
+/sbin/iptables -A WEB_PROTECT -m connlimit --connlimit-above 30 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
+
+# Rate limit: 10 novas conexões/segundo, burst 20
+/sbin/iptables -A WEB_PROTECT -m conntrack --ctstate NEW -m limit --limit 10/s --limit-burst 20 -j ACCEPT
+/sbin/iptables -A WEB_PROTECT -m conntrack --ctstate NEW -j DROP
+
+### 🔍 PORTSCAN - Detecção de varredura de portas
+/sbin/iptables -A PORTSCAN -m recent --name PORTSCAN_ATTACK --set --rsource
+/sbin/iptables -A PORTSCAN -m recent --name PORTSCAN_ATTACK --rcheck --seconds 300 --hitcount 10 --rsource -j DROP
 /sbin/iptables -A PORTSCAN -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit 1/s --limit-burst 2 -j RETURN
 /sbin/iptables -A PORTSCAN -j DROP
 
 ### ==========================================
-### CAMADA 4: SERVIÇOS ESSENCIAIS
+### CAMADA 4: SERVIÇOS ESSENCIAIS (SEM PROTEÇÃO)
 ### ==========================================
 
-### 📡 ICMP (Ping) - Rate limit
-/sbin/iptables -A INPUT -p icmp --icmp-type echo-request -m limit --limit 1/s --limit-burst 3 -j ACCEPT
+### 📡 ICMP (Ping) - Rate limit leve
+/sbin/iptables -A INPUT -p icmp --icmp-type echo-request -m limit --limit 5/s --limit-burst 10 -j ACCEPT
 /sbin/iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
 /sbin/iptables -A INPUT -p icmp -j ACCEPT
 
-### 🌐 DNS (essencial)
+### 🌐 DNS (essencial, sem limitações)
 /sbin/iptables -A INPUT -p udp --sport 53 -j ACCEPT
 /sbin/iptables -A INPUT -p tcp --sport 53 -j ACCEPT
 /sbin/iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
@@ -117,59 +130,61 @@
 ### CAMADA 5: SERVIÇOS PÚBLICOS COM PROTEÇÃO
 ### ==========================================
 
-### 🎮 Proteção EXTRA para Lineage2 (3 conexões - mais permissivo)
-/sbin/iptables -A INPUT -p tcp --dport 2106 -m connlimit --connlimit-above 3 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
-/sbin/iptables -A INPUT -p tcp --dport 7777 -m connlimit --connlimit-above 3 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
+### 🔐 SSH (porta 22) - Proteção contra brute-force
+/sbin/iptables -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW -j SSH_PROTECT
 
-### 🌐 Aplicar GLOBAL_PROTECT (EXCETO SSH!)
-# Apenas portas que NÃO sejam SSH (22)
-/sbin/iptables -A INPUT -i eth0 -p tcp ! --dport 22 -m conntrack --ctstate NEW -j GLOBAL_PROTECT
+### 🎮 LINEAGE 2 - Proteção balanceada
+# Login Server (2106)
+/sbin/iptables -A INPUT -i eth0 -p tcp --dport 2106 -m conntrack --ctstate NEW -j L2_PROTECT
+/sbin/iptables -A INPUT -i eth0 -p tcp --dport 2106 -j ACCEPT
 
-### 🔐 Proteção contra Port Scan (EXCETO SSH)
-/sbin/iptables -A INPUT -p tcp ! --dport 22 --tcp-flags SYN,ACK,FIN,RST RST -j PORTSCAN
+# Game Server (7777)
+/sbin/iptables -A INPUT -i eth0 -p tcp --dport 7777 -m conntrack --ctstate NEW -j L2_PROTECT
+/sbin/iptables -A INPUT -i eth0 -p tcp --dport 7777 -j ACCEPT
 
-### 🌐 Permitir portas do servidor
-/sbin/iptables -A INPUT -p tcp -m multiport --dports 3306,7777,2106,9014,2000,445 -j ACCEPT
-/sbin/iptables -A INPUT -p udp -m multiport --dports 3306,7777,2106,9014,445 -j ACCEPT
+### 🌐 Outras portas - Proteção padrão web
+# MySQL (3306), SMB (445), Management (9014, 2000)
+/sbin/iptables -A INPUT -p tcp -m multiport --dports 3306,9014,2000,445 -m conntrack --ctstate NEW -j WEB_PROTECT
+/sbin/iptables -A INPUT -p tcp -m multiport --dports 3306,9014,2000,445 -j ACCEPT
+/sbin/iptables -A INPUT -p udp -m multiport --dports 3306,9014,445 -j ACCEPT
+
+### 🔐 Anti Port-Scan (apenas portas não essenciais)
+/sbin/iptables -A INPUT -p tcp -m multiport ! --dports 22,2106,7777,3306,9014,2000,445 --tcp-flags SYN,ACK,FIN,RST RST -j PORTSCAN
 
 ### ==========================================
-### CAMADA 6: FORWARD E NAT (VPN)
+### CAMADA 6: FORWARD (VPN → Servidor L2)
 ### ==========================================
 
-### 🔄 NAT - Redirecionamentos
-/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 3306 -j DNAT --to-destination 10.66.66.2:3306
-/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 7777 -j DNAT --to-destination 10.66.66.2:7777
-/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 2106 -j DNAT --to-destination 10.66.66.2:2106
-/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 9014 -j DNAT --to-destination 10.66.66.2:9014
-/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 2000 -j DNAT --to-destination 10.66.66.2:2000
-/sbin/iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 445 -j DNAT --to-destination 10.66.66.2:445
+### 🎮 Proteção Lineage2 no FORWARD (mesma lógica do INPUT)
+/sbin/iptables -A FORWARD -p tcp --dport 2106 -m conntrack --ctstate NEW -j L2_PROTECT
+/sbin/iptables -A FORWARD -p tcp --dport 7777 -m conntrack --ctstate NEW -j L2_PROTECT
 
-### 🎮 Proteção Lineage2 no FORWARD
-/sbin/iptables -A FORWARD -p tcp --dport 2106 -m connlimit --connlimit-above 3 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
-/sbin/iptables -A FORWARD -p tcp --dport 7777 -m connlimit --connlimit-above 3 --connlimit-mask 32 -j REJECT --reject-with tcp-reset
+### 🌐 Proteção WEB no FORWARD (outras portas)
+/sbin/iptables -A FORWARD -p tcp -m multiport --dports 3306,9014,2000,445 -m conntrack --ctstate NEW -j WEB_PROTECT
 
-### 🌐 Aplicar GLOBAL_PROTECT no FORWARD
-/sbin/iptables -A FORWARD -i eth0 -p tcp -m conntrack --ctstate NEW -j GLOBAL_PROTECT
-
-### 🔀 Forward VPN
+### 🔀 Forward VPN (depois das proteções)
+# Saída da VPN (tudo permitido após proteção)
 /sbin/iptables -A FORWARD -i wg0 -o eth0 -s 10.66.66.0/24 -j ACCEPT
+
+# Entrada na VPN (apenas portas específicas)
 /sbin/iptables -A FORWARD -i eth0 -o wg0 -d 10.66.66.2 -p tcp -m multiport --dports 2000,445,9014,3306,2106,7777 -j ACCEPT
+
+# Respostas do servidor L2
 /sbin/iptables -A FORWARD -i wg0 -o eth0 -s 10.66.66.2 -p tcp -m multiport --sports 2000,445,9014,3306,2106,7777 -j ACCEPT
 
 ### ==========================================
 ### CAMADA 7: LOGGING E BLOQUEIO FINAL
 ### ==========================================
 
-### 📊 Configurar LOGDROP
-/sbin/iptables -A LOGDROP -m limit --limit 5/min -j LOG --log-prefix "FW-BLOCK: " --log-level 4
+### 📊 LOGDROP - Log seletivo
+/sbin/iptables -A LOGDROP -m limit --limit 3/min -j LOG --log-prefix "FW-DROP: " --log-level 4
 /sbin/iptables -A LOGDROP -j DROP
 
-### 🌍 OUTPUT geral
+### 🌍 OUTPUT - Tudo permitido
 /sbin/iptables -A OUTPUT -j ACCEPT
 
-### 🚫 Bloquear resto
+### 🚫 Bloquear resto (o que não passou pelas regras acima)
 /sbin/iptables -A INPUT -j LOGDROP
 /sbin/iptables -A FORWARD -j LOGDROP
-
 
 exit 0
