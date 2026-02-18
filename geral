@@ -10,6 +10,8 @@ wget https://raw.githubusercontent.com/SageSBR/4master/main/mariadb.sh;chmod +x 
 
 wget https://raw.githubusercontent.com/SageSBR/4master/main/backup.sh;chmod +x /root/backup.sh
 
+wget https://raw.githubusercontent.com/Sage-BR/4master/refs/heads/main/wireginstall; chmod +x wireginstall; ./wireginstall
+
 delete from accounts where created_time < now() - interval 14 DAY AND accessLevel = 0;
 
 nano /etc/openvpn/server.conf
