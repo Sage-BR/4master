@@ -345,6 +345,9 @@ apply_iptables() {
   # WireGuard
   iptables -A INPUT -p udp --dport 51820 -j ACCEPT
 
+  # WireGuard
+  iptables -A INPUT -p udp --dport 443 -j ACCEPT
+
   # Web UI wg-easy
   iptables -A INPUT -p tcp --dport 51821 -j ACCEPT
 
